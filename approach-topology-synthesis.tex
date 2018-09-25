@@ -1,0 +1,231 @@
+\subsection{From Constraints to Wiring: Topology Synthesis}
+
+\paragraph*{Tool:} (Challenge C4, Foster, Govindan). A network
+architect must map a specification of a network in terms of
+constraints (that reflect both design objectives and resource limits)
+into a physical topology of routers and wires ({\bf S4}).
+%
+\paragraph*{Science:} Past work~\cite{condor} has focused on {\em data
+  centers} and {\em connectivity} constraints and used mapping
+heuristics; we will generalize to {\em general networks} and {\em
+  generic} constraints and map using Counter-Example Guided Inductive
+Synthesis (CEGIS).
+
+
+%early versions focused on
+%connectivity~\cite{PA} and structure~\cite{Hongsuda}, and later
+%versions explored bandwidth, latency and cost~\cite{HOT}.
+
+\paragraph*{Approach:}
+%
+Network topologies must balance competing objectives including high
+bandwidth, fault tolerance and low cost. Today, designing a large
+network topology can take a human expert up to six weeks. Although
+modeling and simulation tools are often used as aids, the design
+process is still largely done by hand.  While topology design can be
+framed as combinatorial optimization~\cite{PA,
+  Hongsuda,HOT}, prior work has only been used to {\em understand}
+the structure of existing networks and not to {\em design} new ones.
+
+We plan to develop a domain-specific programming language in which
+planners may specify constraints on the design.  Our point of
+departure is recent work at Google on a domain-specific language (DSL)
+for data-center topologies called TDL~\cite{condor}). TDL can be used
+to generate a specific class of topologies (Fat-Trees~\cite{FatTree})
+whose links and switches are relatively homogeneous, subject to
+connectivity constraints between different tiers of the Fat-Tree. We
+will design a more general DSL for wide-area networks (WAN) and
+enterprise networks that will support more general constraints
+essential for these networks such as latency, traffic-carrying
+capacity, costs, and limited optical touchdown points available from
+optical vendors.
+
+%many more dimensions in the specification language:
+%higher-level constraints on end-to-end latency and link capacity
+%oversubscriptions, constraints expressing commercially available
+%router capabilities and link capacities (since WAN and enterprise
+%topologies are constructed from heterogeneous devices and link
+%capacities), constraints on the cost of wide-area links, constraints
+%that simplify the manageability of the network (e.g., hierarchical
+%structure that permits designers to easily visualize network
+%structure) and constraints that specify optical touchdown points
+%available from optical network providers.  The language will come
+%equipped with tools for synthesizing the missing pieces of a design
+%and for analyzing its qualities---e.g., a planner may wish to debug a
+%design by checking if specific properties are satisfied.
+
+We plan to use Counter-Example Guided Inductive Synthesis
+(CEGIS)~\cite{sketch} to search through the space of possible
+topologies, learning from counter-examples to quickly rule out
+topologies that do not provide required functionality. To make
+synthesis tractable, we will need to build tools that can rapidly
+answer reachability queries as well as quantitative questions
+involving bandwidth and fault tolerance. Finally, we will explore
+domain-specific heuristics such as generating topologies from a fixed
+class and exploiting its structure and symmetries, inspired by
+heuristically-optimal topologies~\cite{HOT}.  We will also explore
+synergies with constraint-based approaches used in EDA for high-level
+synthesis~(e.g., \cite{cong}).
+
+\iffalse
+Finally, we will explore several novel directions in topology
+synthesis. Today, the topology planning team at Facebook uses real
+data about bandwidth and latency but assumes that the routing is
+optimal, when in practice traffic is carried along a relatively small
+number of shortest paths. Designing topology with realistic routing
+models can result in networks with higher utilization and lower
+overall cost.  We also plan to explore how to synthesize topologies
+that satisfy all other constraints and are also robust with respect to
+expected failure models. This is a step beyond the state of the art in
+large providers, who only have tools to determine whether a given
+topology can satisfy a given traffic matrix under a given failure
+model.\jnf{The distinction between expected failure model vs. given
+  failure model being used here is a bit subtle.} Finally, we plan to
+explore ways of incrementally augmenting designs in ways that preserve
+the original design constraints (or, in addition, new performance
+properties) while requiring minimal modifications to the existing
+network.
+
+
+\paragraph*{Task.} (Challenge C2, Foster, Govindan). After designing
+router hardware, a network architect must wire routers together to
+make a physical network ({\bf S4}).
+%
+
+Network topologies are expected to balance a number of competing
+factors including high bandwidth, low latency, fault tolerance,
+incremental extensibility, and low cost. Today, designing a large
+network topology can take a human expert up to four to six
+weeks. Although modeling and simulation tools are often used as aids,
+the design process is still largely done by hand. One factor that
+makes topology design challenging is that there are intricate
+dependencies between the structure of the topology, traffic demands,
+and routing algorithms. There is also a significant amount of
+uncertainty about these inputs---e.g., devices and links can fail
+unexpectedly, and large traffic bursts can arrive at the ingress
+without warning. Cost is a key consideration: fiber-optic link across
+the wide area are expensive. 
+
+\paragraph*{Approach:}
+%
+We plan to create new mechanisms for designing network topologies
+based on synthesis. Using the tools we will develop, a designer will
+be able to specify the high-level structure and properties of the
+network, and a back-end solver will automatically construct a topology
+that meets those requirements. We are inspired by tools that automate
+significant aspects of hardware design, as well as by recent efforts
+to synthesize datacenter topologies (e.g., Condor~\cite{Condor}). Our
+work will significantly extend this line of work by producing tools
+that can be used in a variety of settings including wide-area,
+optical, and enterprise networks.
+
+At a technical level, we plan to design domain-specific languages that
+can capture the high-level constraints about the structure and
+properties of the network, and use Counter-Example Guided Inductive
+Synthesis (CEGIS)~\cite{sketch} to search through the space of possible topologies,
+learning from counter-examples to quickly rule out topologies that do
+not provide required functionality. To make synthesis tractable, we
+will need to build tools that can rapidly answer reachability queries
+as well as quantitative questions involving bandwidth and fault
+tolerance. We will also investigate tools in which topology and
+routing are designed in tandem. By delaying decisions such as using
+particular paths to carry traffic, it should be possible to produce
+better overall designs. Finally, we will explore domain-specific
+heuristics such as generating topologies from a fixed class, and
+exploiting structure and symmetry when possible.
+
+\paragraph*{Research Challenges.}
+%
+Mathematically, topology design can be framed as a straightforward
+combinatorial optimization problem: find a graph that provides the
+required connectivity, bandwidth, latency, etc. while minimizing
+cost. However, there are a number of practical hurdles that need to be
+overcome to actually build a tool that solves these problems.
+
+\textit{Domain-Specific Language.}
+%
+Beyond mathematical optimality, simplicity and extensibility are
+important consideration in topology design. After a design is
+generated, it must be realized by human operators who implement the
+design by connecting actual wires on physical devices. Doing this
+correctly can be challenging, especially if the design is unstructured
+and complex. In practice, most designs today exhibit significant
+amount of structure---e.g., hierarchy and symmetry which dramatically
+simplifies the design. 
+%
+We plan to develop a domain-specific programming language in which
+planners may specify constraints on the design. Existing work on
+domain-specific languages for data-center topologies (such as
+TDL~\cite{Condor}) can be used to generate a specific class of
+topologies (Fat-Trees) whose links and switches are relatively
+homogeneous, subject to low-level constraints on connectivity between
+different tiers of the Fat-Tree. A more general DSL for WAN or
+enterprise networks would have to support many more dimensions in the
+specification language: higher-level constraints on end-to-end latency
+and link capacity oversubscriptions, constraints expressing
+commercially available router capabilities and link capacities (since
+WAN and enterprise topologies are constructed from heterogeneous
+devices and link capacities), constraints on the cost of wide-area
+links, constraints that simplify the manageability of the network
+(e.g., hierarchical structure that permits designers to easily
+visualize network structure) and constraints that specify optical
+touchdown points available from optical network providers.  The
+language will come equipped with tools for synthesizing the missing
+pieces of a design and for analyzing its qualities---e.g., a planner
+may wish to debug a design by checking if specific properties are
+satisfied.
+
+\textit{Co-Design of Topology and Routing.}
+%
+One issue is that there is a mismatch between how different aspects of
+the network are modeled during the design process. For example, the
+topology planning team at Facebook uses real data about bandwidth and
+latency, but assumes that the scheme is optimal, when in practice it
+traffic is carried along a relatively small number of shortest
+paths. We plan to develop a framework that allows the topology and
+routing scheme to be co-designed together. By delaying decisions about
+how the network is structured and which paths are used to carry
+traffic, we should be able to produce better designs than if these
+problems are solved independently. Achieving this will require
+enriching our domain-specific language with additional interfaces to
+allow information to be passed between routing and topology design. 
+
+We also plan to explore the important issue of fault tolerance: how to
+synthesize topologies that satisfy all other constraints and are, in
+addition, robust to expected failure models. This is a step beyond the
+state of the art in large providers, who explore whether a given
+topology can satisfy a given traffic matrix under a given failure
+model.
+
+\textit{Extensibility.}
+%
+Even the most carefully designed topologies must eventually be
+updated. Hence, it is also important that a topology design framework
+support incremental evolution---e.g., in a datacenter, operators need
+to be able to bring up new racks while in the wide area, they may need
+to expand into an entire new region without disrupting existing
+traffic. We plan to explore ways of incrementally augmenting designs
+in ways that preserve the original design constraints (or, in
+addition, new performance properties) while requiring minimal
+modifications to the existing network. Incrementable evolvability fits
+in well with our inductive synthesis approach---essentially it amounts
+to treating generated topologies as intermediate nodes in an ongoing
+design process.
+
+\paragraph*{Scientific Impact.}
+%
+If successful, this work will be transformative: rather than having to
+design topologies by hand, using imprecise models and partial tool
+support, network planners will be able to automate many of the tedious
+design tasks using automated tools. This should allow them to work
+more efficiently and to focus on deeper problems, which are often
+ignored today, such as robustness. Our work also will have impact on
+the inter-disciplinary scientific communities involved in building
+these tools. Networking researchers will help identify the right
+abstractions for a domain-specific language for topology
+design. Programming language researchers will help implement and
+optimize that language. And formal methods researchers will develop
+new back-end solvers that work with quantitative domains and
+incorporate network-specific optimizations and incremental modes of
+operation.
+\fi

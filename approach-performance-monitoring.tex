@@ -1,0 +1,86 @@
+\subsection{From Network Queries to Router Commands: Performance Monitoring}
+
+\paragraph*{Task:} (Challenge C9, Foster, Weatherspoon). After designing a network, a {\em network operator} must monitor the network for performance problems such as traffic bursts and unexpected failures ({\bf S7}).
+
+\paragraph*{Science:} Past work~\cite{perl1994performance} allows operators to specify higher level performance invariants for multiprocessor systems; we will generalize to allow performance assertions for networks.
+
+\paragraph*{Approach:} We will develop a high-level query language and distributed run-time that exploints features provided on next-generation network hardware (Section~\ref{sec:compiler}) but also for existing IP networks. It will map network-wide performance queries down to commands that can be executed on individual routes and switches. This challenge is similar to mapping network programs discussed previously, but adds several new dimensions, beacuse queries are typically quantitative and can often be answered only approximately. For example, we might implement a query that monitors a single flow by installing  forwarding rules that tag and count matching packets, or one that computes the global traffic matrix query by aggregating counters polled from all devices at the edge~\cite{srinivasan}.
+
+While several existing systems~\cite{srinivasan,ndb,netsight} develop some basic machinery for answering queries, they are point solutions in that they only offer limited expressiveness and require SDN switches.  We believe we can generalize Perl's notion of performance assertions that she used  to monitor a multiprocessor system\cite{perl1994performance}  to existing IP networks and to newer P4 switches, and use them to  concisely express and efficiently evaluate ``difficult'' queries such as identifying bottlenecks or estimating available bandwidth.
+
+We plan to compile performance assertions to existing router commands to poll router counters and logs, using a RegEx engine to correlate information across multiple devices. Before a router crashes or reboots, it will attempt to write a message to a \texttt{syslog} file. Hence, a query to find all routers that have port flapping events in the last hour, we can use a performance assertion about the rate of flap events, which can be computed from the \texttt{syslog} files for all routers. In addition to targeting existing routers, we also plan to take full advantage of emerging platforms such as P4, a goal we share with~\cite{srinivasan}. 
+
+%The key insight is that we apply programming language techniques, experience, and expertise designing approaches for network-wide abstractions and associated compilers and tools with dataplane programming languages such as P4 and next-generation dataplane hardware such as enabled by dataplane programming languages.  Together, we create an approach for performance monitoring automation.
+
+\begin{comment}
+In our vision, network operators specify performance properties using high-level, network-wide abstractions (e.g., regular paths, logical predicates) which are automatically compiled  into run-time monitors (e.g., Syslog monitors, SNMP queries to router counters) that continuously check the healthiness of the network and alert operators upon violation.  
+
+Our approach is inspired by performance assertion checking designed for multi-threaded programs~\cite{perl1994performance}, but tailored for networks that have stringent performance requirements (line rate) and limited resources (computation and storage).  The key insight is that we apply programming language techniques, experience, and expertise designing approaches for network-wide abstractions and associated compilers and tools with dataplane programming languages such as P4 and next-generation dataplane hardware such as enabled by dataplane programming languages.  Together, we create an approach for performance monitoring automation.
+
+
+%Example Performance Queries\newline
+%  Congestion,
+%  Latency,
+%  Available Bandwidth,
+%  Load Balancing,
+%  Blackholes,
+%  Stability
+%
+%Performance Monitoring Compilation
+  
+\paragraph*{Research Challenges.}
+%
+%Challenges: Part of broad challenges at start of grant. Manual effort today 
+%Solution Idea:  Inspired by PL ideas in keeping with grant
+%
+Challenge for performance monitoring and debugging automation are three fold.  First, designing a performance monitoring language and run-time requires balancing tension between ``per-flow'' and ``network-wide'' properties.  Second, instantaneous snapshots of the network, which are required for testing performance properties, are not possible.  Instead, performance monitoring will require concepts from distributed systems such as consistent cuts.  Finally, high line rates and limited hardware, storage, and computation inside the network, may require sampling and approximation.
+
+  
+\paragraph*{Scientific Impact.}
+%
+If successful, this work represents a transformative step for performance monitoring and debugging in networks.  It raises the level of abstraction for performance monitoring involving quantitative and global properties.  It takes a high-level specification of network-wide performance properties and compiles them to low-level, distributed, and continuous monitoring checks.  It automates the entire process of performance monitoring, which is significant.  Finally, the broader impact will make networks much more reliable.
+
+\end{comment}
+
+
+\begin{comment}
+\paragraph{Other Related Prior Work.}
+%  
+Examples\newline
+(1) Perc (SOSP 2013)
+
+Describe data to log using intervals and metrics
+
+Specify performance properties using assertions formulated in terms of simple aggregation operators
+
+{\em Provides abstractions for specifying which data should be collected from a distributed system and which properties should be checked}
+
+Intervals
+\begin{verbatim}
+  interval Read = s: StartRead, e: EndRead
+  metrics time = ts(e) - ts(s)
+  end Read
+\end{verbatim}
+
+Performance Assertion
+\begin{verbatim}
+  assert {&r : Read : r.time <= 10ms} 
+\end{verbatim}
+
+(2) Path Queries (NSDI 2016, SOSR 2016)\newline
+Specify which packets to monitor using regular expressions
+
+Implementation tracks state of query automaton using switch forwarding rules and counters
+
+Felix analyzes configurations to implement monitoring at edge, reducing complexity and churn in core
+
+{\em Path queries provide declarative abstractions for expressing network-wide path queries… but limited to single-packet properties}
+
+Regular Expression
+\begin{verbatim}
+  p1 = in_atom(scrip=H1 & switch=1) ^ out_atom(switch=2 & dstip=H2)
+  p2 = in_atom(switch=1) ^ in_out_atom(tru, switch=2)
+\end{verbatim}
+
+Automation
+\end{comment}

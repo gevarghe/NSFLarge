@@ -1,0 +1,104 @@
+
+\subsection{From Configurations to Policies: Extending Network Verification}
+
+\paragraph*{Tool:} (Challenge C5, C7, Govindan, Millstein, Tamir, Varghese). A network architect must either map configurations at routers to a network policy ({\em verification}) or map a network policy to configurations at routers ({\em synthesis}) ({\bf S5}).
+
+\paragraph*{Science:} Past work in network verification is unscalable or makes assumptions that limits its applicability; we will develop general approaches to these problems such as {\em stepwise refinement} and {\em network specific
+data mining} to find bugs without specifications. We will also develop new algorithms to compactly encode the
+{\em semantic difference} between two routers.
+
+\paragraph*{Approach:}
+
+Together with colleagues, we have helped pioneer the science of configuration verification (Header Space Analysis~\cite{hsa}); built tools for exhaustive data plane~\cite{hsa,netplumber,nod} and control plane~\cite{batfish,era} verification; and applied the idea of automated testing to data planes~\cite{atpg}.  In this thrust, we seek to improve the scalability of these tools and design missing pieces that prevent their application to a broader set of verification and synthesis problems in networking.
+
+We propose new directions for verifying the data plane (the flow of data packets) and the control plane (the flow of routing packets).
+
+{\em 1. Finding Bugs without Specifications:} It has now become standard practice to use formal methods and ``prove'' that the existing router configurations work correctly across all packets for both data plane (e.g., Veriflow~\cite{veriflow} and HSA~\cite{hsa}) and control plane (e.g., ERA~\cite{era}, ARC~\cite{arc}, and Minesweeper~[6]).  However, this approach requires some form of specification to check the router or network model against.  In our experience, such specifications are often missing, wrong, or at best partially correct (basic beliefs
+like ``Customer Machines should reach DNS'' are often correct~\cite{nod} but are only {\em partial} specifications). This is possibly because networks are managed by multiple operators, and there is also much legacy code in configurations that current operators do not understand but are scared to change.  This begs the question: can we find bugs without a specification?
+
+The field of unsupervised learning and data mining suggests that one could {\em cluster} the set of routers in an operational network into partitions that we might term {\em roles}, confirm that roles are meaningful by looking for substantial agreement  between routers in a role, and finally spotting bugs as {\em anomalies} where some routers differ in some way from the majority of routers in the role.  We tried
+straightforward approaches to clustering using off-the-shelf techniques like {\em k-means} and {\em Hamming distance} metrics, but failed to produce meaningful clusters despite tinkering with parameters.
+
+This has led us to invent new {\em network specific clustering} algorithms. Note that the work in network verification such as Veriflow~\cite{veriflow}
+and HSA~\cite{hsa} was able to scale because they exploited the structure of networks to scale verification beyond the limits and limitations of 
+conventional verification tools like SAT Solvers and Symbolic Evaluation applied blindly to the networking domain.  In the same way,
+we believe that clustering and data mining must be rethought to exploit the structure of the network domain.
+
+Consider, for example, the following network specific clustering that we find works quite well in practice.  We start with the
+observation that most names assigned to routers in organizations are meaningful.  In UCLA, for example, a router
+could be named br1.boelter1.floor1, where the ``br'' stands for border router, and ``boelter'' is a building name. We have seen
+similar behavior in other universities and corporations.  Thus, we divide the name into lexical tokens separated
+by delimiters (such as punctutation while ignoring the numbers).  We then evaluate how meaningful each combination of tokens is as a role.  We use statistical techiques analagous to that used by Engler in finding bugs in Linux ~\cite{engler} to evaluate the strength of each role as a hypothesis.  Once we find a good role partition (measured by substantial agreement in some precise sense between routers in a role), we then look for bugs as deviant configurations ~\cite{engler} within each role.    Note, however, that Engler's work has no concept of a role.
+
+We have investigated two router specific clustering techniques. The first, described briefly above, is
+based on combining lexical tokens in router names.  We try all combinations and thus do not make assumptions on where the role name occures whether as say boulter.br.ucla or br.boulter.ucla.  This technique is based on the reasonable assumption that human operators assign router names based on some implied semantics.  However, we have found that the technique is not perfect possibly because of drift and mergers: for example, in UCLA two sets of names ``br.anderson'' (the Anderson School) and ``br.csb1'' referred to the same role.  This name convention is possibly caused by the fact that one set of routers is in the Anderson School in North Campus, and the CSB1 routers are in South Campus.  Nevertheless, the routers in both ``roles'' are very similar.  
+
+We have also investigated a role definition based on distance from the border: most often the routers that interface
+to the ISPs perform one role, then come a set of core routers, then a set of department routers and so on.  However, even this is not perfect because of the use of L2 switching technology that increases or decreases distance without necessarily differentiating roles.  We are  also investiagting combinations of conventional clustering (say based on Hamning distance of names) and say hop count and have  found many new directions.
+
+Our preliminary work at UCLA and some other networks, has identified new bugs that earlier technologies did not.  Our grant plans to flesh out these preliminary ideas, evaluate them scientifically on a much larger set of networks, and make the tools available publicly. 
+
+{\bf 2. Synactic and Semantic Differences:} How can we tell whether a role is meaningful? For example, in UCLA it turns out that the pure router type (e.g. ``br'' or ``bd'') is not sufficiently meaningful but the combination of type and building (e.g., br.boulter) is.  We measure goodness of a role by measuring the syntactic or semantic similarity of routers within the same role. A simple syntactic  check for example is to check for similar definitions, e.g., of DNS servers.  An anomaly then occurs when ``most'' (measured by a threshold) routers in a role have the same DNS server but a few do not.  
+
+A more profound difference is to measure the semantic difference in terms of forwarding behavior of two routers across corresponding interfaces (e.g., upwards towards the ISP).  We leverage a tool
+called Minesweeper~[6] but this tool uses an underlying SAT solver to provide a single packet counterexample 
+when there is a difference.  We have invented a new polynomial time algorithm to loop across Minesweeper to aggregate the 
+counterexamples into sets of prefixes that are forwarded differently.  We feel such semantic differences can not only find more
+meaningful anomalies but also help us understand the underlying semantics of each role.
+
+Roughly the semantic difference algorithm is as follows.  Assume we are looking for the set of destination prefixes that
+are different.  We start by branching on prefixes that start with a 0 and those that start with a 1.  For each set, we
+ask Minesweeper whether the two routers are equivalent.  If Minesweeper finds they are, we do a further check in Z3 
+see whether for all addresses that start with this prefix, there is some router environment and data packet which is
+forwarded differently by the two routers.  If neither condition is true, we branch further.   Stated recursively:
+
+\begin{verbatim}
+FindAllDiffs (R1, R2, P)  //* find all differences between router R1 and R2 for Destination addresses starting with Prefix P
+  If (For all addresses X that satisfies Prefix P, R1 and R2 have similar behavior) // Minesweeper call
+          return; //no differences
+  Else If (For all addresses X that satisfies Prefix P, R1 and R2 have differing behavior) // clever Z3 call invented by Alan
+           Print (P); //everything in P is a difference
+           return;
+  FindAllDiffs (R1, R2, P0); //recurse on P0
+  FindAllDiffs (R1, R2, P1); // recurse on P1
+\end{verbatim}
+
+We have found that while the set of prefixes produced is fairly compact, one can compress further by using a bottom
+up dynamic programming algorithm to also exploit the fact that many sets of prefixes can be compactly expressed
+as difference of cubes notation~\cite{hsa, nod}.  The algorithm walks the subtree of prefixes bottom up evaluating the
+costs of the two notations (positive form and difference form) to find the optimal ``compression'' in a manner
+evocative of Huffman coding,
+
+{\em 3. Stateful Verification via Stepwise Refinement:} Stepwise refinement dates back to Dijkstra and Wirth~\cite{wirth}. With Ryzhyk~\cite{leonid}, we recently introduced refinement-based network programming as an intermediate stance between network verification (the user provides all configurations, the tool verifies) and synthesis (the user provides a specification, the tool synthesizes).  Instead, the user interacts with the system at each level of refinement to design and prove correctness of that level.
+%
+Step-wise refinement is especially promising because it may provide a way to address one of the major limitations of current tools: they cannot model stateful devices. In practice networks maintain state for several reasons (security, congestion control). However, if a router can  no longer be modeled as a function on a single packet but rather as a function on sequences of packets, the state space becomes very large~\cite{mooly-tacas16}.  We hypothesize that step-wise refinement can escape this verification conundrum analogous to way a theorem prover can outperform a model checker if the user specifies high-level invariants.   We will work with Ryzhyk at VMWare to verify Network Function Virtualization (NFV) devices such as Google's Maglev load balancer~\cite{maglev}. 
+
+Moving to synthesis we plan to work on:
+
+{\em 4. Synthesis for Rural Networks:}  We have already proposed extending the work in Propane on control plane synthesis from data center networks to ISPs in an NSF Medium grant (Butane~\cite{butane}) with David Walker at Princeton.  While Butane {\em extends} Propane to cover more use cases, in this grant we {\em simplify} Propane to handle simpler rural networks such as WISPs~\cite{barath} (with PI Barath Raghavan). WISP operators in Africa, India, and rural US will not learn a new network policy language but may be willing to try a phone-based UI that verifies connectivity and suggests configuration changes in response to common events.\jnf{Phone-based UI? Seriously? These operators don't even have access to a desktop or laptop machine?}
+
+We do not propose any work in configuration synthesis in this grant because we have already proposed generalizing the work in Propane~\cite{propane} on control plane synthesis in an NSF Medium grant led by David Walker at Princeton that is joint with Millstein and Varghese. 
+
+\subsection{From Configurations to Tests: Creating Automated Network Tests}
+
+\paragraph*{Tool:} (Challenge C5, C7, Millstein, Tamir, Varghese). Many vendors including Microsoft and 
+Google have created VM frameworks to test routers and their configurations because verification only verifies a {\em  model} at  each router. .  Unfortunately, these frameworks require
+the tester to manually supply tests.  Instead, we suggest sutomated testing as in systems like Klee`\cite{klee}.
+
+\paragraph*{Science:}  Inspired  by our earlier work ATPG~\cite{atpg} for testing data planes and software notions of coverage (e.g., KLEE~\cite{klee}, we will automatically generate test {\em routing announcements} and emulate on UCLA and USC topologies.
+
+\paragraph*{Approach:}
+
+Unlike KLEE, ATPG gets away with a much simpler algorithm based on set cover compared to say KLEE or DART because (in bug-free networks) there are no cycles (although network verification can and should check for such cycles first before applying such methods): hence the state space is finite (though large).   KLEE and DART have a more complex set of heuristics to search the infinite 
+space of executions caused by programs that can have loops.   
+
+However, BGP and OSPF provide
+an interesting intermediate ground; unlike loop-free data packet forwarding, BGP announcements can be batted back and forth before they converge
+and simple set cover is unlikely to work.   On the other hand, most commonly used forms of BGP are not as complex as arbitrary code.
+Thus we seek intermediate methods that are tailored to networking without the complexity and generality of
+say KLEE or DART (which must handle arbitrary code).   The intellectual component of this grant largely arises from navigating this tradeoff space.  
+
+While this approach is inspired by software testing, we are also inspired by hardware testing which has a prolific literature.  PI Tamir has worked in the field of computer architecture and will pursue the connections between hardware notions of testability and coverage, and networks.  [[Yuval add some stuff here]]
+showing how 
+
+

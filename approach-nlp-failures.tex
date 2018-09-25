@@ -1,0 +1,355 @@
+\subsection{From Failure Logs to Models: NLP for Extracting Cause-effect Patterns}
+
+\paragraph*{Task:} (Challenge C9, Govindan, Netravali, Varghese)  
+Operators need techniques to analyze failures to prioritize
+network engineering and design decisions (\textbf{S9}).
+
+\paragraph*{Science:} Relatively little research in Natural Language
+Processing has addressed the extraction of cause-effect relations in
+text. We will develop natural language learning methods that capture
+the linguistic patterns that denote causal relations that appear in
+network failure reports.  Our research will help us suggest what
+\emph{minimal} (because we believe it is unlikely that operators will
+adopt completely structured reporting) descriptions can be added
+to logs and failure reports to enable richer analyses.
+
+\paragraph*{Approach:}  At four or five nines availability, cloud providers can afford only a few minutes of
+outages per month~\cite{rameshgoogle}, and even using NDA tools, it is likely that failures will happen.  Today, cloud operators maintain logs that describe
+changes to the network and document analyses of failures.  These logs are 
+examined manually today~\cite{rameshgoogle}. We propose
+to exploit these logs to automatically (a) categorize root causes of
+failure, and (b) develop a succinct abstraction (a failure
+\emph{cause-effect} graph) to represent each failure. 
+
+In preliminary work, we performed a detailed manual analysis of
+unstructured text in post-mortem reports of over 100 high-impact
+failure events within Google’s network \cite{rameshgoogle}. Here, we
+instead propose to use Natural Language Processing to develop failure
+abstractions. It will take new science in Information Extraction,
+Discourse Analysis and Domain Adaptation to develop natural language
+learning methods that accurately and robustly capture the {\it
+  linguistic patterns} for {\it causal relations} that appear in
+network failure reports.
+%
+Linguistic patterns for causal relations, for example, can appear in
+compound nouns ({[{\sc effect}]\textsubscript{NP}} {\it incident}), as
+subject-object pairs ({[{\sc effect}]\textsubscript{SUBJ}} {\it was
+  triggered by} {[{\sc cause}]\textsubscript{OBJ}}),
+%e.g.\ {[the incident]\textsubscript{EFFECT}} {\it was triggered by}
+%{[a guest OS rollout]\textsubscript{CAUSE}})
+or across sentence boundaries, with or without intervening discourse cues
+like ``as a result" ({[The guest OS rollout]\textsubscript{CAUSE}} was
+applied to Cluster B at 10:10am. {[Connectivity was lost]\textsubscript{EFFECT}}
+at 10:11am.).
+
+We believe that root-cause categorization is amenable to standard \emph{text
+  categorization} techniques~\cite{Sebastiani:2002:MLA:505282.505283}:
+  given a bag-of-words representation of a post-mortem report failure
+  {\sc discussion}, supervised classification methods
+(e.g.\ SVMs~\cite{Joachims1998}, maximum entropy
+classification~\cite{Pang:2002:TUS:1118693.1118704}, deep averaging
+networks (DANs)~\cite{Iyyer:Manjunatha:Boyd-Graber:Daume-III-2015})
+can be applied to classify the text according to
+the type of the root cause it describes.  The challenge here will be to
+develop sufficient training data for accuracy. We propose to use
+active learning methods
+\cite{cohn1996active,mccallumzy1998employing,tong2001support}
+that select the most useful
+examples to add to the training set in each iteration. Finally, to
+discover new root-cause categories, (an instance of ``concept drift''
+\cite{widmer1996learning,klinkenberg2000detecting}) we propose
+human-in-the-loop clustering with constraints \cite{wagstaff2000clustering,wagstaff2001constrained,cohn2003semi,Mierswa:2006:YRP:1150402.1150531}:
+cluster the new and existing post-mortem reports
+and ask a networking expert to inspect the result, looking for
+partitions that contain network failure events that fall outside the
+current set of known root causes.
+
+Beyond root-cause categorization, a useful abstraction that succinctly
+summarizes a single failure is a {\it cause-effect failure graph},
+which relates failure causes (software or hardware components) to
+observed effects. This abstraction will permit network operators to
+analyze, across many failures, which components fail most often and
+under what conditions, enabling them to prioritize resources for
+reliability engineering and network re-design. From an NLP point of
+view, the extraction of cause-effect graphs is most easily viewed as a
+task in {\it information extraction}
+\cite{cardie1997empirical,freitag2000machine,sarawagi2008information}
+in which limited kinds of domain-specific semantic content (i.e.,
+network failure causes, locations, effects) are extracted from
+unstructured text (i.e., post-mortem report {\sc discussion}s), and
+transformed into structured formats (i.e., a cause-effect graph)
+suitable for analysis. Extracting cause-effect relations remains an
+open problem in NLP.  We propose to build on research
+\cite{kozareva:2012:TextGraphs-7,oh-EtAl:2013:ACL2013,CAtoCL:2014,mirza-tonelli:2014:Coling,hidey-mckeown:2016:P16-1}
+in causal relation identification to develop domain-specific
+techniques that can identify both within-clause causal relations,
+inter-clausal and inter-sentential expressions of causality, as well
+as the coreferential relations among the entities, states and events
+involved.
+
+Some of these approaches to NLP for network failure analysis were developed with Claire
+Cardie at Cornell, an NLP Expert.  We also plan to consult Kai-Wei Chan, an NLP expert at UCLA.
+
+
+\iffalse
+%%% Claire:  from preproposal review
+%% The portion of the proposal that involves text analysis and NLP
+%% was not well-integrated with the rest of the proposal: in the
+%% full proposal, its necessity to the larger vision and its
+%% integration with the other areas could be more fully developed,
+%% or perhaps it could be separated out into another proposal.
+
+%% CAN NDA SUPPLY AUTOMATED TOOLS FOR DIAGNOSING FAILURE ROOT CAUSES AND LOCALIZING FAILURES?
+Maintaining the highest levels of availability for content providers
+is challenging in the face of scale, network evolution, and
+complexity. With promised availability rates of 99.99\%-99.999\%,
+however, network failures cannot exceed a few minutes or seconds per
+month.  Google’s internal availability target for user-facing traffic,
+for instance, is no more than a few minutes downtime per
+month~\cite{rameshgoogle}.
+%
+It is critical, therefore, to make progress on the
+development of automated tools that can inform network design and
+analysis.
+% for NDA to supply automated tools for
+% diagnosing failure root causes and localizing failures.
+%
+Current industry practice requires operators to maintain logs that
+store informal records about changes made to topologies and
+configurations, as well as post-mortem analyses of failures.  We
+propose here, to exploit these logs as a key source of information for
+developing the next generation of NDA tools.
+
+In preliminary work, for example, we performed a (manual) detailed analysis
+of the post-mortem reports of over 100 high-impact failure events
+within Google’s network \cite{rameshgoogle}. From the
+reports, we determined the root cause(s) of the failure
+as well as its specfic effects on network components and performance,
+allowing us to quantify several dimensions of availability
+failures. In particular, we found that failures are evenly distributed
+across different network types and across data, control, and
+management planes.  In addition, a large number of failures happen when a
+network management operation is in progress within the network.  This
+failure analysis, in turn, informed the development of new design
+principles for high availability, including using defense in depth,
+maintaining consistency across planes, failing open on large failures,
+carefully preventing and avoiding failures, and assessing the root
+cause quickly.
+
+%% From Claire:  from preproposal review...need to address the following
+%% somewhere. Maybe in the next paragraph?
+%% ``Using NLP for mining current cloud logs is quite promising. It
+%% is not very clear, however, whether the generation of logs
+%% itself should be standardized and optimized to reduce the
+%% difficulty for such mining. It would be good to have some
+%% discussions in this aspect.''
+
+Unfortunately, the manual analysis of each post-mortem report is
+painstakingly slow and the development of useful and robust design
+principles necessarily requires the analysis of dozens, or better yet,
+hundreds of failure post-mortem reports.  So, while the results of our
+study were fruitful, the current process does not scale.
+%
+Fortunately, much progress has been made in recent years in the field
+of natural language processing (NLP) where methods for {\it text
+  categorization}, {\it information extraction} and {\it cause-effect
+  analysis} are especially relevant.  In the sections below, we
+ describe plans for employing these and other methods from NLP and
+machine learning (ML) for root-cause classification and the creation
+of cause-effect failure graphs to support the continued development of
+high availability network design principles.
+    
+\subsection{Root-cause classification}
+
+\begin{table}[thbp]
+  \centering
+  \begin{tabular}{|c|l|} \hline
+    Data & Hardware failures or hardware misconfiguration \\ \cline{2-2}
+         & Control−plane network failure \\ \hline
+    Management & Incorrectly executed management process \\ \cline{2-2}
+               & Risk assessment failure \\ \hline
+    Control & Routing misconfigurations \\ \cline{2-2}
+            & Lack of consistency between control plane elements \\ \cline{2-2}
+    & Device resource overruns \\ \hline
+  \end{tabular}
+  \caption{Hierarchy of failure event root causes.  The first level
+    indicates which of the data plane (i.e.\ (hardware) components
+    that how networks process traffic), control plane (i.e.\ software
+    that determines how to set up the rules by which the data plane
+    processes traffic) or management planes (i.e.\ network
+    (re-)configuration by operators) planes was at fault. The second
+    level provides the class of fine-grained root cause for the
+    failure.}
+   \label{table:root-causes}
+\end{table}
+
+In addition to the {\sc location} of the network failure, its {\sc
+  duration}, {\sc impact on traffic volumes} and {\sc packet loss
+  rates}, etc., a typical post-mortem report also includes an
+unstructured {\sc discussion} of the root causes of the failure. To
+quickly identify and classify the root causes, we propose the use of
+standard {\it text categorization} techniques [refs]: given a
+bag-of-words representation of {\sc discussion}, supervised
+classification methods (e.g.\ SVMs [ref], maximum entropy models
+[ref], deep averaging networks (DANs) [refs]) are applied to classify
+the text according to the type of the root cause it describes.  To
+start, we will employ the two-level root-cause hierarchy identified
+in~\cite{rameshgoogle} and shown in
+Table~\ref{table:root-causes}.
+
+\paragraph{Evaluation.} We will evaluate the approach using leave-one-out cross-validation on
+the 130 Google post-mortem reports that were annotated according
+failure type in the \cite{rameshgoogle} study. To obtain usable
+levels of performance, we expect to need additional training
+data.\footnote{This is surely the case for neural network
+  classification methods, but can also be an issue for non-neural
+  approaches.}  For this we will annotate network failure reports from
+\url{https://github.com/danluu/post-mortems}.  Further, to minimize
+the amount of training, we propose the use of {\it active learning}
+methods \cite{[refs]} that select the most useful examples to add to
+the training set in each iteration (i.e.\ reports whose classification
+the current model is least confident in).
+
+\paragraph{Identification of new types of root causes.}  The categories of root causes for network
+failure in \cite{rameshgoogle} is known to be incomplete --- it
+covers about 70\% of the studied Google network failure.  In any case,
+the set will certainly need to evolve over time as networking
+technology changes.  As a result, we will also investigate approaches
+for identifying new types of root causes.  Following existing ML
+research of this phenomenon (sometimes referred to as ``concept
+drift'') \cite{[refs]}, we propose human-in-the-loop clustering
+(e.g. \cite{[refs]}): cluster the new and existing post-mortem reports
+and ask a networking expert to inspect the result, looking for
+partitions that contain network failure events that fall outside the
+current set of known root causes.
+
+\subsection{Cause-effect failure graphs}
+
+\begin{wrapfigure}{r}{0.65\textwidth}
+%  \footnotesize
+%  \hspace{-3mm}
+%  \includegraphics[width=0.65\textwidth]{cause-effect.jpg}
+  \caption{Cause-effect Failure Graph Extraction}
+  \label{fig:cause-effect}
+\end{wrapfigure}
+
+The construction of high availability design principles
+in~\cite{rameshgoogle} required the manual analysis of the
+post-mortem {\sc discussion}s that describe the hardware status
+information and software outputs and bugs identified by cloud and
+network operators in their attempt to isolate failure symptoms and
+root causes.  Specifically, the analysis determined the sequence of
+EVENTS and STATES that {\sc cause}, or contribute to, a network
+failure; their {\sc location impact} and {\sc time} of occurrence; and
+the {\sc resulting effect}s.  Once identified, this information can be
+concisely described as a {\it cause-effect failure graph}.\footnote{In
+  additional (unpublished) preliminary work, we created a prototype to
+  automatically extract network failure {\sc causes} from logs: The
+  prototype employed the Stanford Parser \cite{klein-manning:2003:ACL}
+  and an existing system, called NetSieve \cite{netseive:2013:nsdi}
+  (based on classical rule-based IE methods), and found the outputs
+  too low-level to be useful; hence, our move to the cause-effect
+  graph representation proposed here.} The graph shown in
+Figure~\cite{fig:cause-effect}, for example, indicates that the guest
+OS rollout (from 2/8/14) together with the lack of an SLB (stream load
+balancer) plugin on Cluster X in Datacenter A caused connectivity loss
+(on 2/8/14).
+%
+It is the subsequent analysis of the cause-effect graphs from many
+failure reports that will facilitate the construction of design
+principles based on, e.g., which components are most likely to fail,
+whether there are common failure patterns, under what conditions
+(traffic, usage) the failures occur, whether there are early warnings
+of failure.
+
+From an NLP point of view, the extraction of cause-effect graphs is
+most easily viewed as a task in {\it domain-specific information
+  extraction} in which limited kinds of domain-specific semantic
+content (i.e., network failure causes, locations, effects) is
+extracted from unstructured text (i.e., post-mortem report {\sc
+  discussion}s), and transformed into a structured format (i.e., a
+cause-effect graph) suitable for populating a database.  There has
+been extensive research in the field of information extraction over
+the last 20+ years \cite{[refs]}, including work to identify named
+entities \cite{[refs]} and fixed sets of the binary relations they
+occur in (e.g., X {\sc located-in} Y, X {\sc married-to} Y, X {\sc
+  part-of} Y) \cite{[refs]} as well as the more complex undertakings
+of event extraction (e.g., identify the type of event, its location,
+time, participants, outcomes, affected entities) \cite{[refs]} and
+opinion extraction (for each expressed opinion or sentiment, identify,
+e.g., its opinion holder, target, polarity (positive, negative),
+intensity) \cite{[refs]}.
+
+There has been much less work done on the extraction of general
+cause-effect information from unstructured text; nevertheless, a
+number of approaches have been proposed in recent years (see, for
+example, \cite{CAtoCL:2014}) including rule-based methods (e.g.,
+\cite{bogel-EtAl:2014:CAtoCL}), ML-based classification (e.g., for
+determining causality between events
+\cite{mirza-tonelli:2014:Coling}), discourse-based learning approaches
+(e.g., \cite{oh-EtAl:2013:ACL2013}) as well as associated research for
+acquiring the necessary lexicons (e.g.,
+\cite{kozareva:2012:TextGraphs-7}) and linguistic cues (e.g.,
+\cite{hidey-mckeown:2016:P16-1}).  To date, however, the extraction of
+causal relations remains an open problem in NLP.
+
+We propose to build on the above research on causal relation
+identification to develop domain-specific techniques for cause-effect
+graph extraction that can identify both within-clause causal relations
+(see S1 and S2), inter-clausal and inter-sentential expressions of
+causality (S3), and the coreferential relations among the
+entities, states and events involved:
+
+\begin{quote}
+S1: [The incident]$_{EFFECT_1}$ was triggered by [a guest OS
+    rollout]$_{CAUSE_1}$ $\ldots$
+     
+S2: [The incident]$_{EFFECT_1}$ resulted from [a load
+    balancer software update]$_{CAUSE_2}$ $ldots$ to [hardware
+    clusters]$_{LOCATION_1}$.
+       
+S3: When [a guest OS rollout]$_{CAUSE_1}$ $\ldots$ was applied to
+    [those clusters]$_{LOCATION_1}$, [connectivity was
+    lost]$_{EFFECT_1}$ $\ldots$
+\end{quote}
+
+\noindent
+Coreference relations are denoted via subscripts (e.g., ``the
+incident'' of S1 and S2 is the loss of connectivity of S3).
+Note that inter-clausal and inter-sentential causal relations can
+be explicitly marked (e.g., via the discourse connective ``when'' in
+S3 or denoted implicitly (as is the case for linking the
+``connectivity loss'' in S3 with its cause described in the first
+clause).
+    
+We will apply existing state-of-the-art methods for all subtasks:
+classification-based learning methods for within-clause cause-effect
+relation extraction [refs] and noun-phrase coreference resolution
+\cite{[refs]}, neural network-based sequence tagging methods for
+inter-sentential causal relation extraction \cite{[refs]}, sequence tagging
+methods \cite{[refs]} for identifying network entities (e.g., ``load
+balancer'', ``hardware clusters''), and Bayesian models for event
+coreference resolution \cite{[refs]}.  In recent years, it has proven
+effective to employ methods that {\it jointly} identify entities and
+their associated relations \cite{[refs]}; as a result, we will focus our
+investigation on these for cause-effect graph extraction.
+
+All of the state-of-the-art techniques involve supervised machine
+learning methods, which require annotated data for training.  And
+while there exist data sets for each of the tasks described above,
+none include text from network failure reports.  As a result, we
+expect to need {\it domain adaptation} techniques that tranfer NLP
+models trained on text from one domain (e.g., newswire) to perform
+well on text from a very different target domain (e.g., failure
+reports).  Because these techniques typically require at least some
+annotated text from the target domain, we plan to use {\it active
+  learning} \cite{[refs]} and new methods in the area of {\it data
+  programming} \cite{[refs]} to create the labelled data sets quickly.
+
+\paragraph{Evaluation.} We can evaluate performance on cause-effect
+graph extraction on the Google data set of ~130 failure reports, after
+annotating them manually with their associated cause-effect graphs. We
+will use the standard performance metrics employed in information
+extraction, measuring Recall, Precision and F-measure.
+\fi
+

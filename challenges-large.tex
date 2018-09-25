@@ -1,0 +1,99 @@
+\section{Challenges}
+\label{sec:challenges}
+
+\begin{quote}
+{\em Many difficulties lay before us} -- Alberto
+Sangiovanni-Vincentelli, The Tides of EDA~\cite{alberto}
+\vspace{-2mm}
+\end{quote}
+
+Networks today face daunting challenges because of {\em ad-hoc design methodologies}, {\em over-reliance on the human-in-the-loop}, and the {\em ineffectiveness of existing techniques}.
+
+\subsection{Ad-Hoc Design Methodologies}
+
+Networks are rife with ad hoc design methodologies, from topology design to policy.
+
+\
+\paragraph*{\em C1: Topology Design is Heuristic:}
+%
+The physical topology of a network is essential for achieving good performance. If the topology lacks the capacity to meet demands, it will have to drop packets; if it does not provide a diverse set of forwarding paths, it will be unable to recover from failures.  Yet there is immense pressure to keep topologies simple (to streamline operations) and small (to minimize cost). Most topology design today is done by hand, using simple heuristics that make it difficult to ensure that the topology will have the properties their designers envisage. A much better alternative would be to design the network topology and configurations together, using tools to {\em automatically synthesize} configurations that provide required performance characteristics while optimizing for simplicity and cost. While it is 
+hardly surprising that topology design of a rural network~\cite{barath} is fairly ad hoc, what is
+surprising is that systematic topology design tools even for large clouds l(e.g.,  Google's 
+Condor~\cite{condor}) are only gradually 
+
+\paragraph*{\em C2: Network Policy is Implicit:}
+%
+In many networks, policy intent is absent or at best provided by incomplete and ambiguous English specifications~\cite{propane}. However, the behavior of the network is defined by the low-level configurations installed on individual routers. Entries in configuration files added by humans (e.g., to override the firewall) are rarely removed due to fears that doing so may have unintended consequences. Different operators often have (erroneous) views of the way parts of the network should behave.
+
+One may imagine that a central challenge for networks is verifying {\em asynchronous} distributed protocols such as BGP.  However over the last 20 years many protocol bugs have either been fixed or worked around; so in this grant we concentrate on {\em configuration} verification and not {\em protocol} verification.  Tools to synthesize or verify configurations would help reduce the fragility of networks today.
+% Verification efforts sometimes conclude~\cite{nod} that the specification
+% was incomplete.
+
+\paragraph*{\em C3: Current Automation Tools are Limited to Clouds:}
+%
+The vast majority of recent work in network verification and automation targets data centers~\cite{hsa, surgeries, libra, DBLP:conf/popl/FosterKM0T15}. However, the landscape of networks is diverse, and solutions for one class of networks do not directly apply to other classes.   Raghavan at Berkeley has made similar observations about rural networks~\cite{barath}, but the problems are different.  Automation is arguably even more important for rural networks are they impact more of the world.
+
+\subsection{Over-Reliance on Humans in the Loop}
+%
+Networks are fragile due to a reliance on humans-in-the-loop in many phases of design and operation.
+
+\paragraph*{\em C4: Manual Configuration Causes Major Cloud Outages:}
+Networks use distributed protocols to compute paths for forwarding
+traffic.  However, these protocols are manually configured in complex
+ways to override the default least-cost routes.  For example,
+customers often prefer certain routes for economic reasons (often by
+configuring a so-called "Local Preference" knob); for security reasons
+(often implemented by packet filters); and for spreading load (using a
+protocol called MPLS~\cite{MPLSIna} that allows more flexible routing
+than traditional IP). To facilitate this kind of fine-grained control,
+routers provide various ways of partitioning sets of addresses or
+routes into equivalence classes for routing (so-called COMMUNITY tags)
+or isolation (so-called VLAN tags). The book by Stewart~\cite{stewart}
+describes the ingenious methods network operators use to tune routes
+and the BGP knobs they manipulate.
+
+Over the years this need has produced a rich set of capabilities for network operators that they are accustomed to using and will not give up easily. Unfortunately, configuration through individual router settings is inherently difficult to understand and get right, as the space of possible routing and security policies is large. Configurations often have implicit invariants that must be respected across routers but are easy to get wrong---e.g., routers must agree on the meaning of a COMMUNITY tags, and access-control rules must be set consistently. Further, even when these invariants are maintained they often go wrong after failures or planned configuration updates. With the need to optimize service delivery, the velocity of change has increased~\cite{rameshgoogle} which increases the chance for errors.  Finally, while many vendors are building ad-hoc tools for detection and remediation, bugs in these tools can exacerbate even small failures.  For example, on April 11 2016, a simple error caused by removing an address block in the Google Compute Cluster~\cite{googlefailure} triggered bugs in automated fault detectors that resulted in a 53-minute global outage.  
+
+\paragraph*{\em C5: Brain Drain Impacts Rural Networks:} Almost four
+billion people, or two thirds of the world’s population, lack access
+to the Internet. Of those, over 90\% are in the developing world, many
+of whom either live in rural locations far from existing Internet
+infrastructure or are too poor to afford connectivity. This situation
+is unfortunate because a 10\% increase in broadband penetration is
+correlated with a 1.35\% increase in GDP for developing
+countries~\cite{perez,qiang}.  Rural networks operate under severe
+resource constraints and so must rely on aggressive traffic
+engineering especially when the weather changes.
+
+Consider AirJaldi, a large rural wireless network operating in the Indian Himalayas whose upstream capacity totals 15Mbps.  During a monsoon,  thunderstorms disconnected several subscribers, indicating failure of the local power grid. Hours later, one of Airjaldi's two upstream providers went down.  Unfortunately, this failure occured at peak usage time, forcing Airjaldi operators to cope with the loss of half its upstream bandwidth. Operators began routing traffic through aggressive content filtering proxies, and all but a few well-known ports (e.g., 80, 443, 456) were blocked. The expertise needed to provide this manual intervention is rare and expensive.  Rural-to-urban migration and ``brain drain'' is a problem in rural areas globally. Offering wages competitive with urban areas is financially untenable.   Allowing rural ISPs to automate the key aspects of network configuration could make their networks more sustainable.
+
+Note that rural networks do not just exist in India and Kenya but also in rural areas of the United States. Consider the Motech ISP~\cite{barath} in Sonoma County, California that one of our PIs (Raghavan) has considerable expertise with. It serves rural users across a rugged region of about 100 square miles. The challenge in such rural networks~\cite{barath} is dynamic rerouting sometimes caused by weather and sometimes by simple reconfiguration: when the operator climbs a tree~\cite{barath}, they may find a better direction to aim their antenna.  Unfortunately, these changes often require altering routes manually at each router which is done today by trial and error.
+
+\paragraph*{\em C6: Providing Performance Guarantees is a Black Art:}
+Cloud tenants do not just want correctness but also performance quantified by service level agreements (SLAs): for example ``Response times should be less than 1 msec'' and ``aggregate bandwidth to Azure Cloud Storage Service should be at least 1G.''
+On the other hand cloud operators care about infrastructure health as quantified by internal performance metrics such as Inter-rack latency, router CPU utilization and router stability.  While
+one normally thinks of such aggressive SLAs as being necessary for large clouds, they are also
+needed for rural networks.  Consider, for example, the jitter requirements for remote telesurgery.
+
+The key to providing such SLAs would be principled performance monitoring tools. Sadly they do not exist today. Instead, each application (e.g., Gmail, Bing, etc.) typically has an alert system. While alerts monitor the infrastructure, other ad hoc tools check for SLA violations to customers.  Many of these tools use diverse data sources such as end-to-end probe results, router counters, and \texttt{syslog}s.  All systems we know of only use some data sources and cannot correlate information across all of them.  For example, there is no higher level way for a manager to ask: ``which routers have come up and down more than 5 times in the last hour.''  This is complicated by the need to avoid false positives: an alert system that alarms too frequently will be ignored by operators.
+
+\paragraph*{\em C7: Data Center Failure Causes are Poorly Understood:}
+While Data Center Analytics and Verification are the ``first responders,'' better reliability will ultimately come from a deeper understanding of cloud failures.  Clouds are complex behemoths and the root causes of failures can be surprising. The recent Google Compute Engine failure~\cite{googlefailure} provides a compelling example.  The failure was not caused by a component failure but by the remediation system. The root cause was documented extensively~\cite{googlefailure} in {\em unstructured text}. 
+% For example, another hypothesis we have is that many failures in clouds are caused by scheduled changes, such as a software update to a load balancer.   If this were so, a versioning system for clouds (as Google uses~\cite{googlefailure}) to revert to earlier states may be useful.   
+One of the PIs (Govindan) spent months manual pouring over the post-mortem reports of Google's high profile failures in the last two years~\cite{rameshgoogle}. Such manual effort cannot scale to the large amount of post-mortem reports that exist in private and  public clouds world-wide.  
+
+\subsection{Traditional Design Techniques Do Not Work or Scale Well:}
+%
+Simply repurposing tools pioneered for software and hardware design to NDA is untenable.
+
+\paragraph{\em C8: Networks Lack Rigorous Foundations:}  Huge improvements in software reliability have come from  {\em 1.} bottom-up tools such as static checkers and fuzz testers that allow developers to gain confidence in the correctness of their code; and {\em 2.} top-down high-level languages, both general-purpose (e.g., Java) and domain-specific (e.g., SQL), which make it easier to specify intent and  obviate large classes of errors by construction. Both approaches rely on theoretical foundations developed over decades, including {\em logics} such as Hoare logic, techniques for {\em modular} program construction and analysis (e.g., isolating function bodies from callers, type systems, and module systems with information hiding), and {\em abstractions} that make automated reasoning tractable and simplify specifications.
+
+Unfortunately these theoretical foundations do not directly apply to networks---network ``programs'' are distributed, and most of the above approaches only apply to sequential programs, especially at scale, even if one assumes protocol convergence. Second, we do not understand enough about networks yet to have useful approaches to modular reasoning or abstraction.  For example, the way that a node routes a particular packet can depend not only on the intended destination, but also on the source address, the nature of the network's relationships with its peers, and the current load on the network.  A further complication is the diversity of vendor platforms (e.g., Cisco, Juniper, etc.).
+
+We will concentrate less on rigorous foundations and more on building usable tools in our proposals. This is partly because foundations is already a major focus of our colleagues (e.g., Foster, Walker and Rexford) at the Cornell-Princeton network programming initiative~]cite{cornellcenter).  However, in
+pursuit of our tools, we will not hesitate  to tackle fundamental questions when needed, leveraging the work of our colleagues wherever possible.  For example, as we decribe later our initial work to find semantic differences between two routers in the same role which builds on the Minesweeper tool~\cite{minesweeper} from Princeton by essentially moving from SAT (Minesweeper, 1 counterexample)
+to AllSAT (our tool, all counterexamples, succinctly encoded).
+
+
+
+

@@ -1,0 +1,47 @@
+\subsection{From Base Stations to Seamless Mobility: Cellular Network Verification}
+
+\paragraph*{Task:} (Challenge C6, Lu, Millstein, Varghese). Today's 3G/4G cellular networks offer ``anytime, anywhere'' Internet service to billions of users on mobile devices.  Designers and operators of cellular networks need tools to verify that low-level configurations on base stations yield critical network correctness and performance properties, especially in the face of mobility (\textbf{S8}).
+
+\paragraph*{Science:} Past work has done {\em testing} of cellular networks to uncover bugs; we will {\em verify} cellular networks, leveraging prior work on verifying IP networks but incorporating non-deterministic user movement.
+
+% They contribute  88\% of the network traffic to date, and are projected to reach 97\% by 2019, with about 10$\times$ traffic growth~\cite{cisco15-stat}.
+% Despite a set of working solutions, both the design and practice of cellular networks have exhibited many problems in practice.
+% Even with excellent radio coverage, mobile users routinely experience service outage, slow network access and unexpected performance
+% penalties. For example, 
+
+\paragraph*{Approach:} When a cell phone call fails, it is easy to blame signal strength.  Prior work by PI Lu hypothesized boldly that some of these failures were caused by bugs, not poor quality signals.  He then found confirmation of this hypothesis even though the cellular world is generally closed to academic researchers.  Lu demonstrated that  cellular networks suffer from all the problems known for data networks such as intermittent connectivity, loops, and blackholes~\cite{tudetecting, tu14-sigcomm, li16-hotmobile, li2016instability, li16-nsdi, peng16-icccn}.  Further, new trends in cellular networks will exacerbate these problems:
+the move to 5G mobile networks \cite{5g-white-house, 5g-gsma, 5g-huawei, fi}, the ongoing push for network function virtualization (NFV), multi-carrier roaming (e.g., Google Project Fi), and diverse radio access techniques (e.g., 60GHz radio and visible-light communications).  
+
+In this grant we seek to verify three critical properties of wireless networks:
+(1) Temporal availability: the network service should remain available to mobile devices over time (as long as radio coverage exists). 
+(2) Spatial reachability: the mobile device should be able to roam from one base station to another to retain its seamless network service.
+(3) Stability over time and space: given invariant conditions (static location, constant wireless channel, etc.), the set of network nodes serving the mobile device should stabilize eventually without causing persistent handoff loops~\cite{li2016instability}.
+
+As mentioned above, Lu's initial work has {\em tested} cellular networks, while several approaches exist to {\em verify} properties of Internet routing.   On the surface these problems appear to be distinct, but we believe an analogy can help bridge the gap, allowing advances in Internet routing verification to be adapted for cellular networks. Specifically, if we view mobile devices as ``packets," then cellular networks can be seen as using a form of routing,  with non-deterministic user movements between ``routers'' (base stations) and external wireless environments that affect the ``routing'' (handoff) decision.  We will leverage this analogy to build verification foundations and tools for cellular networks.
+
+However, cellular networks pose several unique challenges.  First, cellular networks provide a richer set of signaling functions and policy/configuration settings. Second, user mobility requires network verification to be performed ``in space'' because as users move, network operations must provide seamless services without disruption across locations. Third, dynamic wireless channel quality variations make it difficult to provide assurances about network behavior under all possible environments.
+
+%We propose to decompose our overall verification goal into three key subtasks.  First we will develop a high-fidelity %abstraction of the control and management planes of a cellular network {\em relative to a fixed device location}.  Second, we %will build analysis tools that leverage this model to verify the three properties described earlier.  Finally, we will extend our %verification algorithms to incorporate user mobility.
+
+%For the first task, 
+%we will consider a mobile device placed at a fixed location, which is covered by $N$ base stations (known {\em a priori}).  In %our abstraction, a device structure $D$ encodes a mobile device's current cellular protocol status, and external wireless %environment measurements.
+%Formally, each device state is a point over $\{0,1\}^L$, where L is the upper bound of the state length. % (determined by cellular protocols and number of network nodes $N$).
+%We use the denotation \texttt{D.field\_name} to represent the value of a specific bit.
+%This space is a union of two sub-spaces: the {\em read/write state space}, and the {\em read-only state space}.
+%For the protocol status, we focus on control-plane protocols, including radio resource control (RRC), mobility management %%(MM) and data/voice session management (SM).
+%Each protocol has its own protocol states (e.g., radio connectivity status in RRC) and configurations (e.g., per-cell preferences %and measurement thresholds in RRC).  A device is served by one base station $s$ at a time, so the pair $(s,D)$ uniquely %defines a device's status at each time step.
+%
+%These device states are then updated by a {\em network transfer function} $\Gamma$, which takes $(s,D)$ as input and %returns a new base station and updated device state $(s',D')$.
+%In cellular networks, the serving network node may {\em locally} update the device state, and it then determines whether to %handoff the device to another node.
+%This implies that the network transfer function can be decomposed as $\Gamma(s, D)=H(s, T_s(D))$, 
+%where $T_s(D)$ is the {\em state transfer function}  (according to the RRC/MM/SM protocol state machines \cite{TS36.331, %TS24.008}) that updates the device state,
+%and $H(s, D)$ is the {\em handoff function} that determines the next serving base station.
+
+%We will then develop verification algorithms that leverage this abstraction. 
+
+As a starting point we will use the analogy between devices and packets to explore a counterpart to the notion of {\em header-space analysis} that has been useful for Internet routing verification~\cite{hsa}.  However, several new issues arise in the context of wireless networks.  First, both the header-space abstraction and analysis algorithm  must take into account a device's location and its movement over time.  Second, scaling the approach to verify large geographical areas will require new optimizations.  We plan to exploit the topological structure of wireless network infrastructure, whereby base stations are partitioned into {\em location areas}, each of which is managed by a single mobility controller.  Finally, wireless radio quality can vary significantly dynamically, which will make it hard to verify properties unconditionally.  Rather, we will likely require a form of {\em probabilistic verification}, which provides bounds on the likelihood of a property violation, relative to a given set of wireless measurement dynamics~\cite{probnetkat-esop16,probnetkat-popl17}. 
+
+%This location will affect both the device state $D$ and the transfer function $\Gamma$.  We may also need to develop new abstractions for specifying and reasoning about {\em paths} that a device may traverse, since reasoning about all possible device movement sequences will likely be intractable.  Regardless, we will need to exploit domain-specific optimizations to scale to large networks.  For example, we may be able to speed up verification with device mobility by pre-computing properties of the network that are invariant to mobility, for example those that are dependent only on the network topology.
+
+%If successful, this research will develop general yet precise abstractions for cellular networks, which will be useful for many tasks in wireless network design and operations.  This proposed work will also explore and exploit synergies between the abstractions and algorithms for wireless networks and those for Internet routing.  This relationship will broaden our understanding of the nature of all networks and will allow advances in either setting to be more easily adapted to the other setting.  Finally, the world-wide nature of cellular networks will require us to develop novel techniques for leveraging structure to scale network verification technology.
+

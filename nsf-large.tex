@@ -1,0 +1,92 @@
+\newif\ifdraft\drafttrue
+
+\documentclass[10pt]{article}
+
+%%%%%
+% margins
+%%%%%
+\usepackage[margin=1in,includefoot]{geometry}
+
+%%%%%
+% fonts
+%%%%%
+%% \usepackage{fontspec}
+%% \defaultfontfeatures{Ligatures=TeX}
+%% \setmainfont{Palatino}
+%% \setmonofont{Courier}
+\usepackage{palatino}
+
+
+%%%%%%
+% LaTeX libraries
+%%%%%
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{backgrounds}
+\usepackage{paralist}
+\usepackage{url}
+\usepackage{alltt}
+\usepackage{wrapfig}
+\usepackage{epsfig}
+\usepackage{comment}
+\usepackage{tabularx}
+\usepackage{color}
+\usepackage[font=small, labelfont={rm,bf}, margin=0.5cm]{caption}
+\definecolor{williamspurple}{RGB}{89,23,128}
+\definecolor{uclablue}{RGB}{50,132,191}
+
+%%%%%
+% comments in draft mode
+%%%%%
+\newcommand{\finish}[1]{\ifdraft#1\else\fi}
+\newcommand{\jnf}[1]{\finish{\textcolor{williamspurple}{[#1~--JNF]}}}
+\newcommand{\tdm}[1]{\finish{\textcolor{uclablue}{[#1~--TDM]}}}
+\newcommand{\budget}[1]{\finish{[#1~pp]}}
+
+%%%%%
+% Spacing tweaks
+%%%%%
+\usepackage[medium,compact]{titlesec}
+\makeatletter
+\let\origparagraph\paragraph
+\newcommand\paraspace{\vspace*{-0.20ex}}
+\renewcommand\paragraph{\@ifstar{\starpara}{\nostarpara}}
+\newcommand\starpara[1]{\paraspace\noindent\origparagraph*{\textbf{#1}}}
+\newcommand\nostarpara[1]{\paraspace\noindent\origparagraph*{\textbf{#1}}}
+\makeatother
+%%% END spacing tweaks
+
+\begin{document}
+
+%\input{summary}
+
+\newpage
+
+\setcounter{page}{1}
+
+\input{introduction-large}
+
+\input{challenges-large}
+
+\input{abstractions-large}
+
+\input{approaches-large}
+
+\input{evaluation-large}
+
+
+
+\input{outreach-large}
+
+\input{organization-large}
+
+\input{ethics}
+
+\input{broader-large}
+
+\newpage
+
+\setcounter{page}{1}
+\bibliographystyle{plain}
+\bibliography{proposal,todd,claire,nate,ravi}
+\end{document}

@@ -1,0 +1,43 @@
+\section{Educational Activities}
+
+NDA is a radical departure from the status quo that will fundamentally change the kinds of skills needed to design and operate the networks of tomorrow. To address this need, we propose a set of educational initiatives designed to train students for the jobs of the future. A distinctive feature of these initiatives is that they target operators in the developing world and data center networks in the developing world.
+
+
+\subsection{Reaching Operators around the World}
+\label{operatoreducationsection}
+
+Our EEVBook will be designed to train NDA tool developers and, to some extent, network architects. We also plan to target network operators around the world with our second educational initiative. 
+
+We have had discussions with Michael Ginguld, an entrepreneur who believes that Internet access is a basic right~\cite{ginguld} and has pioneered AirJaldi, an ISP in India, to make this vision real. Setting up networks around the world requires two things: infrastructure (which is receiving attention from Facebook~\cite{facebookworld}) and {\em  operators who can cover the entire gamut of network operations} from climbing trees to network architecture and configuration. In NDA, we focus on the latter aspect: can we lower the barriers to operator training and network operations in rural India or Africa?
+
+We are inspired by vignettes from the Cisco Academy~\cite{ciscoacademy} showing how transformative network
+operator training can be. These include Stephen Oriecki in Kenya, a graduate of the academy who persuades youth to choose the training center over ``drugs in the street,'' and Farha Fathima in Sri Lanka who is one of the 28\% of women graduates of the academy in the Asia Pacific region (where it is estimated that nearly 400,000 networking professionals will be required to meet demand). While the academy's achievements are impressive, its model has flaws: certification is expensive (\$10,000), covers only Cisco gear, and teaches its graduates low-level primitives in Cisco routers.
+
+Our allies who operate rural networks (Grameen, AirJaldi, Motech) around the world have more specialized needs than that provided by a Cisco academy-like education. We propose to explore whether NDA tools can raise
+the abstraction of network operations for rural networks.
+
+% their needs through a suite of open libraries, tools, and educational
+% materials, as described next.
+
+% Even in such networks, we  realize the problem is more than just BGP or Spanning Tree settings.  Further, the issues they contend with (weather etc.) are very different from getting Cisco certification in the US.  Nevertheless, we believe we can serve their needs by scripts.
+
+\paragraph*{Network Scripting: Simple Languages for Operators}
+%
+Our model for the development platform is the libraries and frameworks offered by Python for data mining---e.g., the IPython framework\footnote{\url{https://ipython.org}}. These tools have raised the level of abstraction for data analysis and enabled a new category of ``data scientist'' to exist. We aim for the same with our \emph{network scripting} libraries: open-source software that aspiring operators like Stephen Oriecki and Farha Fathima can use both to learn NDA techniques and to use in the field.
+
+Operators of rural networks, because they are called upon to do many tasks, are likely to find useful more familiar programming paradigms, rather than sophisticated specification languages~\cite{netkat,propane}.  We aim to provide these operators with the ability to easily produce \emph{network scripts} that automate common tasks. Analogous to the case for scripting in UNIX or IPython, we will develop high-level libraries for common design patterns like changing a peer and filtering at high traffic, with implementations that perform the appropriate low-level router commands.  For instance, a network script can make a library call {\bf No Transit $(X, Y)$} to state that traffic is disallowed between a Provider $X$ and a Peer $Y$, and this will produce BGP commands at the ingress of $X$ (to add a community tag) and at the egress (to filter based on this tag).  For rural networks like Motech~\cite{barath} the scripts will compile not to BGP but to commands for a UNIX router.
+
+We will couple network scripting with a \emph{simulator} that can be used by rural operators to test the impact of scripting commands on models of real networks, including their own. This can serve both as an educational tool and to help assess impact of configuration changes pre-deployment.
+
+We hypothesize that a network scripting framework would allow a novice to more quickly and reliably learn how to operate a simple network. While this is a somewhat risky hypothesis, we propose to validate it as follows: Varghese and Millstein will look for 1-2 MS student who will first take the CCNA certification class (Santa Monica College close to UCLA offers such a class) and gain Cisco certification.  We will use proposal funding to have the students visit Motech and Grameen (see letters).  The student theses will be to understand needs, build a simulator, and develop a corresponding Network Scripting language (and compiler) for these networks.  We will measure success via feedback from the researchers (Raghavan for Motech) and regional leaders (e.g., Hutchful for Grameen).
+
+If successful, perhaps Network Scripting can be generalized to a broader class of networks, starting with home and small business networks and perhaps extending its reach to small data centers.  Could such an approach enfranchise women and minority students in the US as well as around the world?  We plan to examine this question by developing a scripting module for the successful SoNIC and PLMW workshops for minority and female students run by PIs Weatherspoon and Foster in recent years. Although these aspirations are perhaps lofty, we believe the simple starting point of libraries for rural networks is risky but achievable.  Rural networks---kept working today by many operators with string and sealing wax~\cite{barath}---can, we believe, benefit tremendously from {\em scripts and a simulator}.  
+
+
+\subsection*{Industry Outreach}
+
+We also plan to devote significant energy in connecting to industrial
+practitioners in addition to rural operators. To help learn about real-world problems and use-cases,
+we plan to organize workshops on NDA for industrial participants. We
+plan to invite leading network architects and operators to learn about
+what problems they are facing and explore whether NDA can help. 
