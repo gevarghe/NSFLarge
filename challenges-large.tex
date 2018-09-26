@@ -17,7 +17,7 @@ Networks are rife with ad hoc design methodologies, from topology design to poli
 \paragraph*{\em C1: Topology Design is Heuristic:}
 %
 The physical topology of a network is essential for achieving good performance. If the topology lacks the capacity to meet demands, it will have to drop packets; if it does not provide a diverse set of forwarding paths, it will be unable to recover from failures.  Yet there is immense pressure to keep topologies simple (to streamline operations) and small (to minimize cost). Most topology design today is done by hand, using simple heuristics that make it difficult to ensure that the topology will have the properties their designers envisage. A much better alternative would be to design the network topology and configurations together, using tools to {\em automatically synthesize} configurations that provide required performance characteristics while optimizing for simplicity and cost. While it is 
-hardly surprising that topology design of a rural network~\cite{barath} is fairly ad hoc, what is
+hardly surprising that topology design of a rural network~\cite{barathwisp} is fairly ad hoc, what is
 surprising is that systematic topology design tools even for large clouds l(e.g.,  Google's 
 Condor~\cite{condor}) are only gradually 
 
@@ -31,7 +31,7 @@ One may imagine that a central challenge for networks is verifying {\em asynchro
 
 \paragraph*{\em C3: Current Automation Tools are Limited to Clouds:}
 %
-The vast majority of recent work in network verification and automation targets data centers~\cite{hsa, surgeries, libra, DBLP:conf/popl/FosterKM0T15}. However, the landscape of networks is diverse, and solutions for one class of networks do not directly apply to other classes.   Raghavan at Berkeley has made similar observations about rural networks~\cite{barath}, but the problems are different.  Automation is arguably even more important for rural networks are they impact more of the world.
+The vast majority of recent work in network verification and automation targets data centers~\cite{hsa, surgeries, libra, DBLP:conf/popl/FosterKM0T15}. However, the landscape of networks is diverse, and solutions for one class of networks do not directly apply to other classes.   Raghavan has made similar observations about rural networks~\cite{barathwisp}, but the problems are different.  Automation is arguably even more important for rural networks are they impact more of the world.
 
 \subsection{Over-Reliance on Humans in the Loop}
 %
@@ -67,7 +67,7 @@ engineering especially when the weather changes.
 
 Consider AirJaldi, a large rural wireless network operating in the Indian Himalayas whose upstream capacity totals 15Mbps.  During a monsoon,  thunderstorms disconnected several subscribers, indicating failure of the local power grid. Hours later, one of Airjaldi's two upstream providers went down.  Unfortunately, this failure occured at peak usage time, forcing Airjaldi operators to cope with the loss of half its upstream bandwidth. Operators began routing traffic through aggressive content filtering proxies, and all but a few well-known ports (e.g., 80, 443, 456) were blocked. The expertise needed to provide this manual intervention is rare and expensive.  Rural-to-urban migration and ``brain drain'' is a problem in rural areas globally. Offering wages competitive with urban areas is financially untenable.   Allowing rural ISPs to automate the key aspects of network configuration could make their networks more sustainable.
 
-Note that rural networks do not just exist in India and Kenya but also in rural areas of the United States. Consider the Motech ISP~\cite{barath} in Sonoma County, California that one of our PIs (Raghavan) has considerable expertise with. It serves rural users across a rugged region of about 100 square miles. The challenge in such rural networks~\cite{barath} is dynamic rerouting sometimes caused by weather and sometimes by simple reconfiguration: when the operator climbs a tree~\cite{barath}, they may find a better direction to aim their antenna.  Unfortunately, these changes often require altering routes manually at each router which is done today by trial and error.
+Note that rural networks do not just exist in India and Kenya but also in rural areas of the United States. Consider the Motech ISP in Sonoma County, California that one of our PIs (Raghavan) has considerable expertise with. It serves rural users across a rugged region of about 100 square miles. The challenge in such rural networks~\cite{barathwisp} is dynamic rerouting sometimes caused by weather and sometimes by simple reconfiguration: when the operator climbs a tree~\cite{barathwisp}, they may find a better direction to aim their antenna.  Unfortunately, these changes often require altering routes manually at each router which is done today by trial and error.
 
 \paragraph*{\em C6: Providing Performance Guarantees is a Black Art:}
 Cloud tenants do not just want correctness but also performance quantified by service level agreements (SLAs): for example ``Response times should be less than 1 msec'' and ``aggregate bandwidth to Azure Cloud Storage Service should be at least 1G.''
