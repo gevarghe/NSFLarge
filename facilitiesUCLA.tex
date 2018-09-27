@@ -34,4 +34,10 @@ networking function, the department computing facility also provides many
 computing resources, including disk storage and backup, general-purpose timesharing access to multi-user systems, email, and more than 600 workstations for research
 and educational usage.
 
+We hope to take advantage of a FPGA testbed built by our collaborator Ashwin Gumaste at IIT Mumbai. The Gumaste test-bed is sufficiently large, with a combined switching capacity of 3 Tbps – typical of a tier-2 network that one would find in a rural/regional setting. The test-bed is subject to services that are provisioned through a home-grown controller, which is a modification of OpenDaylight, with improvements that are essential towards including the concepts of megalabels and source-routing. 
+
+Gumaste's team has developed 3 kinds of SDN whiteboxes as part of their test-bed: a metropolitan edge SDN box that has 10x1Gbps and 2x10Gbps IOs, a regional cross-connect whose individual stackable element has 4x10Gbps and 8x1Gbps IOs, and a core whitebox that support 72x10Gbps IOs, with capability to also support 4x2x100Gbps IOs. The edge box is built around a Virtex 6 FPGA (240T-1) and an AMCC PHY which multiplexes 3.125Gbps IO lines from the FPGA into 10Gbps IOs. The regional SDN platform is based on a Virtex 6 365T FPGA along with 4 Pemaquid OTN capable ASICs. The larger core platform has 2 switching cards, each supporting multiple Virtex 7 690T FPGAs, and up to 12 IO cards, each supporting 12x10Gbps or 2x100Gbps (2 slot width) with each IO card built around two parallel units of Virtex 7 FPGAs. All the FPGA based hardware interacts with a Java-based network management system that consists of a provisioning module, a telemetry module and a network discovery module, together which imitates an SDN controller. 
+
+We plan to use the Gumaste testbed as part of an end to end demonstration that shows routing and scheduling synthesis together with an application such as remote telesurgery.
+
 \end{document}
