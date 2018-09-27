@@ -1,0 +1,93 @@
+\newif\ifdraft\drafttrue
+
+\documentclass[10pt]{article}
+
+%%%%%
+% margins
+%%%%%
+\usepackage[margin=1in,includefoot]{geometry}
+
+%%%%%
+% fonts
+%%%%%
+%% \usepackage{fontspec}
+%% \defaultfontfeatures{Ligatures=TeX}
+%% \setmainfont{Palatino}
+%% \setmonofont{Courier}
+\usepackage{palatino}
+
+
+%%%%%%
+% LaTeX libraries
+%%%%%
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{backgrounds}
+\usepackage{paralist}
+\usepackage{url}
+\usepackage{alltt}
+\usepackage{wrapfig}
+\usepackage{epsfig}
+\usepackage{comment}
+\usepackage{tabularx}
+\usepackage{color}
+\usepackage[font=small, labelfont={rm,bf}, margin=0.5cm]{caption}
+\definecolor{williamspurple}{RGB}{89,23,128}
+\definecolor{uclablue}{RGB}{50,132,191}
+
+%%%%%
+% comments in draft mode
+%%%%%
+\newcommand{\finish}[1]{\ifdraft#1\else\fi}
+\newcommand{\jnf}[1]{\finish{\textcolor{williamspurple}{[#1~--JNF]}}}
+\newcommand{\tdm}[1]{\finish{\textcolor{uclablue}{[#1~--TDM]}}}
+\newcommand{\budget}[1]{\finish{[#1~pp]}}
+
+%%%%%
+% Spacing tweaks
+%%%%%
+\usepackage[medium,compact]{titlesec}
+\makeatletter
+\let\origparagraph\paragraph
+\newcommand\paraspace{\vspace*{-0.20ex}}
+\renewcommand\paragraph{\@ifstar{\starpara}{\nostarpara}}
+\newcommand\starpara[1]{\paraspace\noindent\origparagraph*{\textbf{#1}}}
+\newcommand\nostarpara[1]{\paraspace\noindent\origparagraph*{\textbf{#1}}}
+\makeatother
+%%% END spacing tweaks
+
+\begin{document}
+
+%\input{summary}
+\centerline{\large\textbf{CNS Core: Collaborative Research: Network Design Automation}}
+\bigskip
+
+When we write a document using Office365, order flowers from Amazon, or update our Facebook status, we are accessing a world of rich services via a network. Network reliability is paramount for business, science, and government because downtime affects productivity, economic output, and social communication. However, reliability is difficult to achieve in the face of rapid technology evolution, increased network programmability, manual configuration, and the stringent economics of the IT industry.
+
+This grant seeks to take first steps towards creating a new field, \emph{Network Design Automation} (NDA), in order to create computer-aided design (CAD) tools for networks  that reduce design effort and increase reliability based on a scientific understanding of network structure. We are inspired by Electronic Design Automation (EDA), a \$7B industry that underpins the \$100B chip industry and is also a vibrant intellectual discipline in its own right.  We will build on 
+the last five years of progress in Network Verification done by the community (which has created startups like
+Veriflow Networks and Forward Networks).  However, in the EDA analogy, Network Verification corresponds to one class 
+of tools (e.g,, timing verification) while other tools (the equivalents of synthesis, place and route etc.,) need more 
+elaboration.  
+
+We do seek to extend network verification with tools like specification mining
+and control plane testing. But we also aim to forge new directions in: (1) configuration synthesis (e.g.,  network scripting to lower the barriers for operators),  (2) topology design (for rural networks and data centers), (3) debugging (e.g., tying application performance to network problems using machine learning), and (4) fault diagnosis (e.g., mining failure logs using Natural Language Processing).  NDA will make it possible to construct and manage networks with strong formal properties, while minimizing the frequency of failures and greatly reducing recovery time.
+
+UCLA will serve as the host institution. UCLA (Varghese: Networking; Millstein: Programming Languages, Netravali, Tamir: Systems) will be responsible for tools and theory for specification mining, debugging, and testing, while USC  (Govindan: Networking, Ragahavan: ICDT) will be responsible for fault diagnosis, rural network design, and scripting for operators.  However, as we are all based in Los Angeles we will work on all problems as a group with regular meetings and co-advising students between the two institutions to expose syngergies between each topic.  While 6 is a large number of PIs, Varghese (UCLA) and Govindan (USC) will coordinate individual research teams into a coherent whole.
+
+\smallskip
+\noindent\textbf{Intellectual Merit.}~
+%
+Networks are more complex  than either programs or chips, including scale ($10^5$ devices and zetabytes of traffic), heterogeneity (devices, protocols, vendors), management complexity (most configuration is still at "assembly" level), rate of evolution (new data centers and service rollouts), and high availability needs ($<$ 40 minutes per month downtime for $3 \times 9$s availability). Thus, we need better abstractions and tools across the board: more expressive languages that can express richer functionality, and more powerful tools that can efficiently analyze and synthesize configurations at scale. To provide the scientific underpinning for these efforts, we will develop new mathematical frameworks for reasoning about network structure and behavior. A theme of our grant is harnessing interdisciplinary approaches.  Besides a consistent focus on using algorithm search in novel ways (e.g., SAT solvers for rural topologies),
+we will explore data mining (to learn specifications), machine learning (to build associations for debugging),
+and NLP (to mine operator logs).  We do not seek to merely reuse existing
+mechanisms (e.g., SAT solvers, K-means clustering) but to exploit domain-specific insights about the {\em structure} of modern networks to not only create more scalable tools but also ferment new intellectual areas.
+
+\smallskip
+\noindent\textbf{Broader Impacts.}~
+Our scientific discoveries and artifacts developed will have broad impact by helping transform academic, industrial and rural approaches to networking:
+(1) Public Clouds: We will partner with Microsoft (via Albert Greenberg) and Google (via Amin Vahdat), both of whom are former colleagues of Varghese and Govindan to develop, deploy, and evaluate NDA technology for clouds. (2) Rural Networks: Barath Raghavan will work with colleagues at Motech (California) and Grameen (Ghana, via
+David Hutchful) to deploy topology design and configuration scripting tools (3) Operator Outreach: We will release a set of configuration scripting tools for
+specialized networks like home networks as well as rural networks. (4) End-to-end demonstration:  we will show fault diagnosis, testing, and synthesis working together on 
+our colleague Ashwin Gumaste's FPGA router testbed at IIT Mumbai for remote telesurgery.
+\end{document}
