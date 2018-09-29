@@ -1,4 +1,6 @@
-\documentclass[12pt]{article}
+\documentclass[10pt]{article}
+\usepackage{color}
+\usepackage{palatino}
 
 \topmargin=-0.5in
 \oddsidemargin=0in
@@ -8,6 +10,8 @@
 
 \pagestyle{empty}
 
+\newcommand{\todo}[1]{\textcolor{red}{[#1]}}
+
 \begin{document}
  \begin{Large}
 \begin{center}
@@ -15,17 +19,40 @@ Broadening Participation in Computing
 \end{center}
 \end{Large}
 
-Recall that we aim for the same with our \emph{network scripting} libraries: open-source software that aspiring operators in rural areas in developing countries can use both to learn NDA techniques and to use in the field.
+Research on network design automation is poised to broaden participation in computing at three distinct, complementary levels:
+\begin{enumerate}
+\item \textbf{Direct Impact:} participation impact of the research outputs, expanding network access which is a prerequisite for virtually all computing today.
+\item \textbf{Community Education:} the research has the potential to directly involve a broader community.
+\item \textbf{Active Participation:} broadening the community of people involved in the research itself.
+\end{enumerate}
 
-Operators of rural networks, because they are called upon to do many tasks, are likely to find useful more familiar programming paradigms, rather than sophisticated specification languages~\cite{netkat,propane}.  We aim to provide these operators with the ability to easily produce \emph{network scripts} that automate common tasks.  Recall that 
-we will couple network scripting with a \emph{simulator} that can be used by rural operators to test the impact of scripting commands on models of real networks, including their own. This can serve both as an educational tool and to help assess impact of configuration changes pre-deployment.
+\begin{table*}
+\centering
+\begin{tabular}{l|p{1.6in}|p{1.6in}|p{1.6in}|}
+\cline{2-4}
+ & \textbf{Direct Impact} & \textbf{Community Education} & \textbf{Active Participation} \\ \hline
+\multicolumn{1}{|l|}{\textbf{Attitudes}} & Valuing and connecting neglected communities (A) & Participatory design (B) & Local research recruiting (C) \\ \hline
+\multicolumn{1}{|l|}{\textbf{Infrastructure}} & Broadened network access (D) & Open source tools (E) & Language refinement (F) \\ \hline
+\multicolumn{1}{|l|}{\textbf{Curriculum}} & NDA coursework (G) & Community workshops on NDA (H) & Curriculum design (I) \\ \hline
+\multicolumn{1}{|l|}{\textbf{People}} & Mentorship (J) & Incubators (K) & Broader hiring and recruiting (L) \\ \hline
+\end{tabular}
+\caption{NDA Broadening Participation Activities.}
+\label{t:bpc-impacts}
+\end{table*}
 
-Once we have this in place:
+We take inspiration from past fora on BPC (e.g., CRA Snowbird) and seek to broaden participation along four axes, which intersect the three levels we describe above: attitudes, infrastructure, curriculum, and personnel.  As a result, we aim for 12 BPC impacts, which we summarize in Table~\ref{t:bpc-impacts}.  Some of these impacts are natural consequences of our research agenda, as we will descibe below, and others are explicit efforts we will undertake to broaden participation in ways that are aligned with the proposed research agenda.
 
-Helping reach underprepresented minorities and woman to be network operators even in the US.  (Barath please add) While this is too lofty a goal, we want to do a test run to teach kids in downtown LA via a workshop in the second and fourth years.
+Changing attitudes is always a subtle but necessary task in broadening participation.  We plan to achieve this by, first and foremost, valuing and connected neglected communities (A) by having them as a focus in our work.  As we have indicated throughout our proposal, we believe previously-neglected communities and the engineering and research challenges that arise in their context are worthy of study, and this shift in attitude is an important first step in broadening participation.  We plan to take this one step further by engaging in participatory design (B) in such communities (as Raghavan has done in the past in the context of rural WISP networks), engaging both technical and non-technical stakeholders in the process of designing a purpose-built network that meets the community's needs and leverages NDA.  Finally, we as a research community often neglect the recruiting of new researchers (students, staff, etc.) from marginalized communities such as communities of color and poor rural areas, despite the burgeoning talent they have; to begin to address this issue and to express our attitude that such communities have much to contribute, we plan to travel to give talks (e.g., at local community colleges) to recruit new students and staff (C) to work with us on NDA.
 
-Barath add details?
+Today, the first and most important prerequisite for broadening participation in computing is access to the Internet.  There are, unfortunately, too many places in the United States that today still have little to no broadband Internet access and as a result are completely shut out from computer science (both research and engineering).  Our work on NDA will have a direct impact on expanding Internet access (D) in such communities, as we have outlined previously.
+Beyond this, recall that we aim for the same with our \emph{network scripting} libraries: open-source software (E) that aspiring operators in rural areas and developing countries can use both to learn NDA techniques and to use in the field.  Operators of rural networks, because they are called upon to do many tasks, are likely to find useful more familiar programming paradigms, rather than sophisticated specification languages~\cite{netkat,propane}.  We aim to provide these operators with the ability to easily produce \emph{network scripts} that automate common tasks.  Recall that we will couple network scripting with a \emph{simulator} that can be used by rural operators to test the impact of scripting commands on models of real networks, including their own. This can serve both as an educational tool and to help assess impact of configuration changes pre-deployment.  Further, we plan to engage such operators in improving the infrastructure (tools, languages, etc.), directly engaging them in language design and refinement (F).
 
+Once we have this in place, we hope to develop curriculum ... \todo{Need text on NDA coursework plans for G and I}.
+One way we plan to engage the community is to hold community workshops in Los Angeles on new ways to design and build networks (H), building upon our engagement with the community from activities (C) and (K).  We see these workshops as engaging a new generation of underrepresented young people in the promise of computer networking, and introducing them to modern techniques.  For too long the avenues available to such students have been now-archaic vocational training such as Cisco certification; our aim is to spark an interest in modern approaches to networking, setting up new pathways and possibilities for young people.
 
+Finally, what matters most in broadening participation is a human focus: a focus on the people who we hope to engage in our research community.  To help reach underprepresented minorities and women to be network operators and networking researchers, we plan to undertake several efforts.  First, as a direct impact of our work, we must engage with and mentor existing network operators from disadvantaged communities (J).  This is something we have already undertaken in prior work~\cite{wispbarath}, and have active ongoing efforts; Raghavan is advising a new urban WISP that aims to connect poor communities in Los Angeles County and a rural farming community in Northern California that has been long disconnected.  Further, we have developed a program through which we can create ``community network incubators'' (K).  Such an incubator, like a startup incubator, would aim to identify new network operators or others interested in networking but who have few connections or resources, and provide them access to the PIs and the broader networking community, with the aim of helping them materially and intellectually achieve their goals (e.g., of starting a new network, of joining the research community, etc.).  We have begun to develop a plan for such an incubator and plan to put it into action in the context of NDA.
+Finally, broader hiring and student recruiting is a key to broadening participation (L).  The PIs have recruited broadly, with quite some success, and plan to continue these efforts. \todo{Fill in details for all PIs}.  Two of three of Raghavan's PhD students are women along with one undergraduate student, and Raghavan is a faculty mentor in the USC NAI-STEM program through which he advises a freshman minority student who grew up in South LA and whose family never attended college.
+
+\todo{Add metrics to evaluate success of BPC?}
 
 \end{document}
