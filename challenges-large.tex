@@ -16,10 +16,8 @@ Networks are rife with ad hoc design methodologies, from topology design to poli
 \
 \paragraph*{\em C1: Topology Design is Heuristic:}
 %
-The physical topology of a network is essential for achieving good performance. If the topology lacks the capacity to meet demands, it will have to drop packets; if it does not provide a diverse set of forwarding paths, it will be unable to recover from failures.  Yet there is immense pressure to keep topologies simple (to streamline operations) and small (to minimize cost). Most topology design today is done by hand, using simple heuristics that make it difficult to ensure that the topology will have the properties their designers envisage. A much better alternative would be to design the network topology and configurations together, using tools to {\em automatically synthesize} configurations that provide required performance characteristics while optimizing for simplicity and cost. While it is 
-hardly surprising that topology design of a rural network~\cite{barathwisp} is fairly ad hoc, what is
-surprising is that systematic topology design tools even for large clouds l(e.g.,  Google's 
-Condor~\cite{condor}) are only gradually 
+The physical topology of a network is essential for achieving good performance. If the topology lacks the capacity to meet demands, it will have to drop packets; if it does not provide a diverse set of forwarding paths, it will be unable to recover from failures.  Yet there is immense pressure to keep topologies simple (to streamline operations) and small (to minimize cost). Most topology design today is done by hand, using simple heuristics that make it difficult to ensure that the topology will have the properties their designers envisage. A much better alternative would be to design the network topology and configurations together, using tools to {\em automatically synthesize} configurations that provide required performance characteristics while optimizing for simplicity and cost. While it is
+hardly surprising that topology design of a rural network~\cite{barathwisp} is fairly ad hoc, what is surprising is that systematic topology design tools even for large clouds (e.g.,  Google's Condor~\cite{condor}) are only now becoming available.
 
 \paragraph*{\em C2: Network Policy is Implicit:}
 %
@@ -43,16 +41,15 @@ traffic.  However, these protocols are manually configured in complex
 ways to override the default least-cost routes.  For example,
 customers often prefer certain routes for economic reasons (often by
 configuring a so-called "Local Preference" knob); for security reasons
-(often implemented by packet filters); and for spreading load (using a
-protocol called MPLS~\cite{MPLSIna} that allows more flexible routing
+(often implemented by packet filters); and for spreading load (using  MPLS~\cite{MPLSIna} which allows more flexible routing
 than traditional IP). To facilitate this kind of fine-grained control,
 routers provide various ways of partitioning sets of addresses or
 routes into equivalence classes for routing (so-called COMMUNITY tags)
-or isolation (so-called VLAN tags). The book by Stewart~\cite{stewart}
+or isolation (so-called VLAN tags). Stewart~\cite{stewart}
 describes the ingenious methods network operators use to tune routes
 and the BGP knobs they manipulate.
 
-Over the years this need has produced a rich set of capabilities for network operators that they are accustomed to using and will not give up easily. Unfortunately, configuration through individual router settings is inherently difficult to understand and get right, as the space of possible routing and security policies is large. Configurations often have implicit invariants that must be respected across routers but are easy to get wrong---e.g., routers must agree on the meaning of a COMMUNITY tags, and access-control rules must be set consistently. Further, even when these invariants are maintained they often go wrong after failures or planned configuration updates. With the need to optimize service delivery, the velocity of change has increased~\cite{rameshgoogle} which increases the chance for errors.  Finally, while many vendors are building ad-hoc tools for detection and remediation, bugs in these tools can exacerbate even small failures.  For example, on April 11 2016, a simple error caused by removing an address block in the Google Compute Cluster~\cite{googlefailure} triggered bugs in automated fault detectors that resulted in a 53-minute global outage.  
+Over the years this need has produced a rich set of capabilities for network operators that they are accustomed to using and will not give up easily. Unfortunately, configuration through individual router settings is inherently difficult to understand and get right, as the space of possible routing and security policies is large. Configurations often have implicit invariants that must be respected across routers but are easy to get wrong---e.g., routers must agree on the meaning of a COMMUNITY tags, and access-control rules must be set consistently. Further, even when these invariants are maintained they often go wrong after failures or planned configuration updates. With the need to optimize service delivery, the velocity of change has increased~\cite{rameshgoogle} which increases the chance for errors.  Finally, while many vendors are building ad-hoc tools for detection and remediation, bugs in these tools can exacerbate even small failures.  For example, on April 11 2016, a simple error caused by removing an address block in the Google Compute Cluster~\cite{googlefailure} triggered bugs in automated fault detectors that resulted in a 53-minute global outage.
 
 \paragraph*{\em C5: Brain Drain Impacts Rural Networks:} Almost four
 billion people, or two thirds of the world’s population, lack access
@@ -78,9 +75,9 @@ needed for rural networks.  Consider, for example, the jitter requirements for r
 The key to providing such SLAs would be principled performance monitoring tools. Sadly they do not exist today. Instead, each application (e.g., Gmail, Bing, etc.) typically has an alert system. While alerts monitor the infrastructure, other ad hoc tools check for SLA violations to customers.  Many of these tools use diverse data sources such as end-to-end probe results, router counters, and \texttt{syslog}s.  All systems we know of only use some data sources and cannot correlate information across all of them.  For example, there is no higher level way for a manager to ask: ``which routers have come up and down more than 5 times in the last hour.''  This is complicated by the need to avoid false positives: an alert system that alarms too frequently will be ignored by operators.
 
 \paragraph*{\em C7: Data Center Failure Causes are Poorly Understood:}
-While Data Center Analytics and Verification are the ``first responders,'' better reliability will ultimately come from a deeper understanding of cloud failures.  Clouds are complex behemoths and the root causes of failures can be surprising. The recent Google Compute Engine failure~\cite{googlefailure} provides a compelling example.  The failure was not caused by a component failure but by the remediation system. The root cause was documented extensively~\cite{googlefailure} in {\em unstructured text}. 
-% For example, another hypothesis we have is that many failures in clouds are caused by scheduled changes, such as a software update to a load balancer.   If this were so, a versioning system for clouds (as Google uses~\cite{googlefailure}) to revert to earlier states may be useful.   
-One of the PIs (Govindan) spent months manual pouring over the post-mortem reports of Google's high profile failures in the last two years~\cite{rameshgoogle}. Such manual effort cannot scale to the large amount of post-mortem reports that exist in private and  public clouds world-wide.  
+While Data Center Analytics and Verification are the ``first responders,'' better reliability will ultimately come from a deeper understanding of cloud failures.  Clouds are complex behemoths and the root causes of failures can be surprising. The recent Google Compute Engine failure~\cite{googlefailure} provides a compelling example.  The failure was not caused by a component failure but by the remediation system. The root cause was documented extensively~\cite{googlefailure} in {\em unstructured text}.
+% For example, another hypothesis we have is that many failures in clouds are caused by scheduled changes, such as a software update to a load balancer.   If this were so, a versioning system for clouds (as Google uses~\cite{googlefailure}) to revert to earlier states may be useful.
+One of the PIs (Govindan) spent months manual pouring over the post-mortem reports of Google's high profile failures in the last two years~\cite{rameshgoogle}. Such manual effort cannot scale to the large amount of post-mortem reports that exist in private and  public clouds world-wide.
 
 \subsection{Traditional Design Techniques Do Not Work or Scale Well:}
 %
@@ -90,10 +87,6 @@ Simply repurposing tools pioneered for software and hardware design to NDA is un
 
 Unfortunately these theoretical foundations do not directly apply to networks---network ``programs'' are distributed, and most of the above approaches only apply to sequential programs, especially at scale, even if one assumes protocol convergence. Second, we do not understand enough about networks yet to have useful approaches to modular reasoning or abstraction.  For example, the way that a node routes a particular packet can depend not only on the intended destination, but also on the source address, the nature of the network's relationships with its peers, and the current load on the network.  A further complication is the diversity of vendor platforms (e.g., Cisco, Juniper, etc.).
 
-We will concentrate less on rigorous foundations and more on building usable tools in our proposals. This is partly because foundations is already a major focus of our colleagues (e.g., Foster, Walker and Rexford) at the Cornell-Princeton network programming initiative~]cite{cornellcenter).  However, in
+We will concentrate less on rigorous foundations and more on building usable tools in our proposals. This is partly because foundations is already a major focus of our colleagues (e.g., Foster, Walker and Rexford) at the Cornell-Princeton network programming initiative~\cite{cornellcenter}.  However, in
 pursuit of our tools, we will not hesitate  to tackle fundamental questions when needed, leveraging the work of our colleagues wherever possible.  For example, as we decribe later our initial work to find semantic differences between two routers in the same role which builds on the Minesweeper tool~\cite{minesweeper} from Princeton by essentially moving from SAT (Minesweeper, 1 counterexample)
 to AllSAT (our tool, all counterexamples, succinctly encoded).
-
-
-
-

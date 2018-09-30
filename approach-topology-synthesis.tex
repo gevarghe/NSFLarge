@@ -7,7 +7,7 @@ into a physical topology of routers and wires ({\bf S4}).
 %
 \paragraph*{Science:} Past work~\cite{condor} has focused on {\em data
   centers} and {\em connectivity} constraints and used mapping
-heuristics; we will generalize to {\em rurall networks} and CDNs with {\em
+heuristics; we will generalize to {\em rural networks} and CDNs with {\em
   generic} constraints.
 
 
@@ -86,7 +86,7 @@ properties) while requiring minimal modifications to the existing
 network.
 
 
-\paragraph*{Task.} (Challenge C2,  Govindan,Millstein, Raghavan, ). After designing
+\paragraph*{Task.} (Challenge C2: Govindan, Millstein, Raghavan). After designing
 router hardware, a network architect must wire routers together to
 make a physical network ({\bf S4}).
 %
@@ -103,7 +103,7 @@ and routing algorithms. There is also a significant amount of
 uncertainty about these inputs---e.g., devices and links can fail
 unexpectedly, and large traffic bursts can arrive at the ingress
 without warning. Cost is a key consideration: fiber-optic link across
-the wide area are expensive. 
+the wide area are expensive.
 
 \paragraph*{Approach:}
 %
@@ -150,7 +150,7 @@ design by connecting actual wires on physical devices. Doing this
 correctly can be challenging, especially if the design is unstructured
 and complex. In practice, most designs today exhibit significant
 amount of structure---e.g., hierarchy and symmetry which dramatically
-simplifies the design. 
+simplifies the design.
 %
 We plan to develop a domain-specific programming language in which
 planners may specify constraints on the design. Existing work on
@@ -187,7 +187,7 @@ how the network is structured and which paths are used to carry
 traffic, we should be able to produce better designs than if these
 problems are solved independently. Achieving this will require
 enriching our domain-specific language with additional interfaces to
-allow information to be passed between routing and topology design. 
+allow information to be passed between routing and topology design.
 
 We also plan to explore the important issue of fault tolerance: how to
 synthesize topologies that satisfy all other constraints and are, in
