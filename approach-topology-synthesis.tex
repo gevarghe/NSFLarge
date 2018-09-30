@@ -39,6 +39,10 @@ essential for these networks such as latency, traffic-carrying
 capacity, costs, and limited optical touchdown points available from
 optical vendors.
 
+In general, the problem of topology synthesis can be decomposed into two subproblems: synthesizing the logical connectivity, and synthesizing the placement of the topology. The former problem takes as input the desired traffic capacity, technology constraints such as available router and link capacities, while the latter needs models of cost, the availability of optical touchdown points, or, as in the case of wireless networks, terrain models. Depending on scale and complexity of the formulation, these subproblems can be solved independently or jointly, and we will explore optimality gaps associated with these two approaches.
+
+An important class of constraints that are only now becoming important are constraints imposed by topology \textit{lifecycle management}. Topologies live for several years, and during that time, they are continuously expanded to accommodate traffic growth. At the same time, this expansion has to happen \textit{in place} (while carrying live traffic). To do this, operators perform the expansion in \textit{steps}, where each step reduces the capacity of the network slightly while allowing new elements (links, routers) to be added to the network. In recent work~\cite{mingyang}, we have identified several aspects of datacenter topology design that reduce the \textit{complexity} of lifecycle management. In this task, we will explore the feasibility of expressing \textit{constraints} for topology synthesis that capture lifecycle management complexity.
+
 %many more dimensions in the specification language:
 %higher-level constraints on end-to-end latency and link capacity
 %oversubscriptions, constraints expressing commercially available
@@ -53,18 +57,13 @@ optical vendors.
 %and for analyzing its qualities---e.g., a planner may wish to debug a
 %design by checking if specific properties are satisfied.
 
-We plan to use Counter-Example Guided Inductive Synthesis
-(CEGIS)~\cite{sketch} to search through the space of possible
-topologies, learning from counter-examples to quickly rule out
-topologies that do not provide required functionality. To make
-synthesis tractable, we will need to build tools that can rapidly
-answer reachability queries as well as quantitative questions
-involving bandwidth and fault tolerance. Finally, we will explore
-domain-specific heuristics such as generating topologies from a fixed
-class and exploiting its structure and symmetries, inspired by
-heuristically-optimal topologies~\cite{HOT}.  We will also explore
-synergies with constraint-based approaches used in EDA for high-level
-synthesis~(e.g., \cite{cong}).
+We intend to explore several methods to scale the synthesis. Extensions to SAT solvers, like Satisfiability Modulo Convex Optimization (SMC~\cite{satex}), permit specifying convex constraints. Approaches like Counter-Example Guided Inductive Synthesis (CEGIS)~\cite{sketch} can help search through the space of possible topologies, learning from counter-examples to quickly rule out topologies that do not provide required functionality. To make synthesis tractable, we will need to build tools that can rapidly answer reachability queries as well as quantitative questions involving bandwidth and fault tolerance. Finally, we will explore domain-specific heuristics such as generating topologies from a fixed class and exploiting its structure and symmetries, inspired by heuristically-optimal topologies~\cite{HOT}.  We will also explore synergies with constraint-based approaches used in EDA for high-level synthesis~(e.g., \cite{cong}).
+
+A synthesized topology will have a \textit{designed performance}, which may differ from its \textit{deployed performance}. This difference may arise either because constraints only approximately capture the real world, or because the scaling optimizations traded off optimality. In these cases, it will be important to understand the gap between designed and deployed performance. While this is hard to do for wired networks, we will examine this gap for wireless networks at small scale that attempt to mirror rural wireless ISPs.
+
+Finally, synthesis can also be applied to \textit{overlay} networks, a good example of which is a CDN. In this problem, given an underlying physical topology, one needs to determine the placement of CDN proxies (or front-ends~\cite{gentle-aggression,policing}) that satisfy several constraints: proximity to clients, capacity constraints at co-location facilities where proxies might be located, availability of backhaul ISPs to carry traffic between proxies and origin servers, and so on. co-PI Govindan participated in the design of a system at Google to detect sub-optimal proxy locations. However, re-provisioning these proxies is, today, largely manual, which motivates the need for more principled methods for synthesizing CDNs.
+
+
 
 \iffalse
 Finally, we will explore several novel directions in topology
